@@ -1,0 +1,15 @@
+CHANGES IN VERSION 0.0
+
+BUG FIXES
+
+    o Compression progress bar no longer stops at 70%
+
+    o Set limits on the number of bytes for storing the fractional part
+    
+    o Replaced calloc() with R_alloc() in C code
+    
+    o Registered C functions
+
+NEW FEATURES
+
+    o Package created

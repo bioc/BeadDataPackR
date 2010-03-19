@@ -1,0 +1,93 @@
+%
+% NOTE -- ONLY EDIT beadarray.rnw!!!
+% beadarray.tex file will get overwritten.
+%
+%\VignetteIndexEntry{beadarray Vignette}
+%\VignetteDepends{}
+%\VignetteKeywords{beadarray expression Analysis}
+%\VignettePackage{beadarray}
+\documentclass{article}
+
+\usepackage{hyperref}
+\usepackage{Sweave}
+\textwidth=6.2in
+\textheight=8.5in
+%\parskip=.3cm
+\oddsidemargin=.1in
+\evensidemargin=.1in
+\headheight=-.3in
+
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textsf{#1}}}
+\newcommand{\Rmethod}[1]{{\texttt{#1}}}
+\newcommand{\Rfunarg}[1]{{\texttt{#1}}}
+\newcommand{\Rclass}[1]{{\textit{#1}}}
+
+
+
+\newcommand{\classdef}[1]{
+  {\em #1}
+}
+\begin{document}
+\title{\Rpackage{BeadDataPackR}: Compression Tools for Raw Illumina Beadarray Data}
+
+\author{Mike L. Smith and Andy G. Lynch}
+
+\maketitle
+
+
+
+\section*{Introduction}
+
+Raw Illumina BeadArray data consists of \textit{.tif} images produced by the scanner, accompanied by \textit{.txt} and \textit{.locs} files containing details of bead locations and their intensities within the image.  For a single channel human expression array these data typically occupy $\approx$ 125MB of storage.  The size of these files can prove a hinderance to both their storage and distribution.  Whilst the images can be compressed using a variety of common tools, the \Rpackage{BeadDataPackR} package aims to provide tools for the efficient compression of the \textit{.txt} and \textit{.locs} files.
+
+\section*{Compressing Data}
+The first step before using any of the functionality is to load the package.  For the purpose of this vignette was also get the path to the example data that is distributed with the package.
+
+<<Loading, eval=TRUE, echo = TRUE>>=
+    library(BeadDataPackR)
+    dataPath <- system.file("data", package = "BeadDataPackR")
+@
+
+\Rpackage{BeadDataPackR} has two primary functions, namely to compress raw Illumina data, or decompress a file already created with the package.  We'll begin with file compression, which is carried out using the following commands:
+
+<<Compress, eval=FALSE, echo = TRUE>>=
+    compressBeadData(txtFile = "example.txt", locsGrn = "example_Grn.locs", outputFile = "example.bab", path = dataPath, nBytes = 4, nrow = 326, ncol = 4)
+@
+
+The \Rfunarg{txtFile} and \Rfunarg{locsGrn} arguments specify the names of the files to be compressed.  For two channel data there is an additional argument, \Rfunarg{locsRed}, giving the name of the \textit{.locs} file for the red channel.  These files should be found within the directory specified in the \Rfunarg{path} argument.  A future revision of the package will hopefully alter this behaviour, so all arrays within a specified folder will be automatically identified and compressed.
+
+The argument \Rfunarg{nBytes} specifies how many bytes should be used to store the fractional parts of the bead coordinates. For a single channel array the maximum value is 4 (8 for a two channel array).  If the maximum value is used the coordinates are stored in the \textit{.bab} file as single precision floating point numbers, as they are in the \textit{.locs} files.  If a value smaller than the maximum is choosen then the integer parts of each coordinate are stored seperately.  The requested number of bytes are then used to store the fractional parts, with a corresponding loss of precision as the number of bytes decreases.
+
+The \Rfunarg{nrow} and \Rfunarg{ncol} arguments can normally be left blank.  They specify the dimensions of each grid segment on the array and, if left blank, can normally be infered from the grid coordinates.  However, this can fail for particularly small grids, such as in this example data.  If one wants or needs to specify them explicitly, these values can be found in the \textit{.sdf} which accompanies the bead level output from the scanner.  The number of columns and rows per segment can be found within the tags \texttt{<SizeGridX>} and \texttt{<SizeGridY>} respectively.
+
+\section*{Decompressing Data}
+
+To decompress a \textit{.bab} file that was created by \Rpackage{BeadDataPackR}, use the following function:
+
+<<Decompress, eval=FALSE>>=
+    decompressBeadData(inputFile = "example.bab", inputPath = dataPath, outputMask = "restored", outputPath = ".", outputNonDecoded = FALSE, roundValues = TRUE )
+@
+
+The \Rfunarg{inputFile} argument specifies the name of the \textit{.bab} that should be decompressed.  This file should be located in the folder indicated by \Rfunarg{inputPath}, which by default is the current working directory.
+
+When an array is compressed its name is stored in the compressed file.  By default when it is decompressed this name is used for the restored files.  However, this can be troublesome if you don't want to overwrite an exisiting file.  The \Rfunarg{outputMask} argument allows the user to define the names of the restored \textit{.txt} and \textit{.locs} files.  In this case the restored files will be named `restored.txt' and `restored\_Grn.locs'.  If this was two channel data a further file, `restored\_Red.locs', would also be produced.  The files are created in the location specified by the \Rfunarg{outputPath} argument.  If this is left blank the current working directory is used.
+
+The \textit{.txt} file that are produced by Illumina's scanner do not included the locations of beads that failed their decoding process.  Since their location are retained in the \textit{.locs} file, we have to option of including them in the restored files. \Rfunarg{outputNonDecoded} toggles whether to include them or not.  Illumina's \textit{.txt} files also give the bead centre coordinates to 7 significant figures, resulting in a different number of decimal places as we move across the array, rather than the single precision values held in the \textit{.locs} files.  \Rfunarg{roundValues} allows the user to choose between mimicing this behaviour when recreating the \textit{.txt} files or ouputing the maximum available precision.  The default for both these arguments is to reproduce the original Illumina files.
+
+\newpage
+\section*{Session Info}
+
+\begin{table*}[htbp]
+\begin{minipage}{\textwidth}
+<<sessionInfo, results=tex, print=TRUE>>=
+toLatex(sessionInfo())
+@ 
+\end{minipage}
+\caption{\label{tab:sessioninfo}%
+The output of \Rfunction{sessionInfo} on the build system 
+after running this vignette.}
+\end{table*}
+
+\end{document}

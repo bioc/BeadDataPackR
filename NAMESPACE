@@ -1,0 +1,3 @@
+useDynLib(BeadDataPackR, .registration = TRUE)
+
+export(decompressBeadData, compressBeadData)
