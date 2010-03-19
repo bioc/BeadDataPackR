@@ -1,7 +1,7 @@
 Package: BeadDataPackR
 Type: Package
 Title: Compression of Illumina BeadArray data
-Version: 0.0.3
+Version: 0.0.4
 Date: 2010-03-19
 Author: Mike L. Smith, Andy G. Lynch
 Maintainer: Mike Smith <mike.l.smith@cancer.org.uk>
@@ -9,4 +9,4 @@ Description: Provides functionality for the compression and decompression of raw
 License: GPL-2
 LazyLoad: yes
 biocViews: Microarray
-Packaged: 2010-03-19 18:28:07 UTC; smith68
+
