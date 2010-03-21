@@ -38,8 +38,11 @@ SEXP composeIntensityFlags(SEXP neg, SEXP large) {
 	
 	nBytes = ( (length(neg) - 1) / 4 ) + 1;
 	
+    /* assign the vectors and set all entries to zero */
 	negResized = (int *) R_alloc(sizeof(int), nBytes * 4);
+    memset(negResized, 0, sizeof(int) * nBytes * 4);
 	largeResized = (int *) R_alloc(sizeof(int), nBytes * 4);
+    memset(largeResized, 0, sizeof(int) * nBytes * 4);
 	PROTECT(flags = allocVector(INTSXP, nBytes));	
 	
 	for(i = 0; i < length(neg); i++) {
@@ -59,8 +62,6 @@ SEXP composeIntensityFlags(SEXP neg, SEXP large) {
 		INTEGER(flags)[i] = byte;
 	}
 
-	//free(negResized);
-	//free(largeResized);
 	UNPROTECT(1);
 	return(flags);
 }

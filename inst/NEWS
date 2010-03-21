@@ -2,6 +2,8 @@ CHANGES IN VERSION 0.0
 
 BUG FIXES
 
+    o Fixed bug where intensity flags were not set correctly
+
     o Set a default file name for output from compressBeadData if left blank
 
     o Compression progress bar no longer stops at 70%
