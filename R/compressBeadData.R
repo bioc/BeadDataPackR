@@ -4,6 +4,10 @@ function(txtFile, locsGrn, locsRed = NULL, outputFile = NULL, path = NULL, nByte
     message(paste("\nCompressing", strsplit(txtFile, ".txt")));
     pb <- txtProgressBar(style=3)
     setTxtProgressBar(pb, 0.01)
+
+    ## set the default name for the output file if one isn't specified
+    if(is.null(outputFile))
+      outputFile <- paste(strsplit(txtFile, ".txt"), "bab", sep = ".");
     
     ## identify the correct path to each of the file
     if(!is.null(path)) {

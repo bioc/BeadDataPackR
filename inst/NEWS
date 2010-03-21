@@ -2,6 +2,8 @@ CHANGES IN VERSION 0.0
 
 BUG FIXES
 
+    o Set a default file name for output from compressBeadData if left blank
+
     o Compression progress bar no longer stops at 70%
 
     o Set limits on the number of bytes for storing the fractional part
