@@ -1,7 +1,7 @@
 combineFiles <-
 function(txt, locsGrn, locsRed = NULL, pb = NULL) {
  
-    locsRounded <- matrix(.Call("roundLocsFileValues", locsGrn), ncol = 2);
+    locsRounded <- matrix(.Call("roundLocsFileValues", locsGrn, PACKAGE = "BeadDataPackR"), ncol = 2);
     txtFileCoords <- txt[,3:4];
    
     locs <- cbind(1:nrow(locsGrn), locsGrn, locsRed)
@@ -9,31 +9,34 @@ function(txt, locsGrn, locsRed = NULL, pb = NULL) {
     ## add an index column to the txt file
     txtFileCoords <- cbind(1:nrow(txtFileCoords), txtFileCoords);
     
-    locsKey <- locsRounded[,1] * locsRounded[,2];
-    txtKey <- txtFileCoords[,2] * txtFileCoords[,3];
+    locsKeyMult <- locsRounded[,1] * locsRounded[,2];
+    txtKeyMult <- txtFileCoords[,2] * txtFileCoords[,3];
 
+    
     if(!is.null(pb))
         setTxtProgressBar(pb, 0.20);
     
-    ## if we find a duplicate entry then it may be due to the multiplication, so use string concatonation
-    ## this could probably made better by checking the cause of the duplicates!
-    if(any(duplicated(locsKey))) {
-        dupsLocs <- c(which(duplicated(locsKey)), which(duplicated(locsKey, fromLast = TRUE)));
-        dupsTxt <- c(which(duplicated(txtKey)), which(duplicated(txtKey, fromLast = TRUE)));
-        locsKey[dupsLocs] <- (locsRounded[dupsLocs,1]) / (locsRounded[dupsLocs,2])
-        txtKey[dupsTxt] <- (txtFileCoords[dupsTxt,2]) / (txtFileCoords[dupsTxt,3])
-      #locsKey <- paste(locsRounded[,1], locsRounded[,2], sep = "_")
-      #txtKey <- paste(txtFileCoords[,2], txtFileCoords[,3], sep = "_") 
+    ## if we find a duplicate entry then it may be due to the multiplication
+    if(any(duplicated(locsKeyMult))) {
+        locsKeyDiv <- locsRounded[,1] / locsRounded[,2];
+        txtKeyDiv <- txtFileCoords[,2] / txtFileCoords[,3];
+        idx <- which( (locsKeyDiv %in% txtKeyDiv) & (locsKeyMult %in% txtKeyMult) )
+    }
+    else {
+        idx <- which( locsKeyMult %in% txtKeyMult );   
     }
 
-    if(any(duplicated(locsKey))) 
-        message("Still some duplicates");
+    ## if there's still some duplicated use string concatonation. It's really slow!!
+    if(length(idx) != nrow(txtFileCoords)) {
+        locsKey <- paste(locsRounded[,1], locsRounded[,2]);
+        txtKey <- paste(txtFileCoords[,2], txtFileCoords[,3]);
+        idx <- which(locsKey %in% txtKey);
+    }
     
     if(!is.null(pb))
         setTxtProgressBar(pb, 0.30);
     
     ## find which are in both file and remove those that aren't from the locsCoords
-    idx <- which(locsKey %in% txtKey);
     nonDeCoords <- locs[-idx,];
     locsFileCoords <- cbind( locs[,1], locsRounded, locs[,2:ncol(locs)] )[idx,];
 
