@@ -2,9 +2,9 @@ CHANGES IN VERSION 0.0
 
 BUG FIXES
 
-	o Fixed bug in combining .txt and .locs files due to duplicate entries
+    o Fixed bug in combining .txt and .locs files due to duplicate entries
 
-    o Fixed bug where intensity flags were not set correctly
+    o Fixed bug in writing intensity flags.  Introduced when switching from calloc() to R_alloc().
 
     o Set a default file name for output from compressBeadData if left blank
 
