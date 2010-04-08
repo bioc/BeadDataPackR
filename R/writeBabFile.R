@@ -51,22 +51,22 @@ writeCoordinates <- function(coordinates, con, twoChannel, nBytes, useOffset = F
             writeBin(as.integer(coords[,3:4]), con = con, size = 2^(!useOffset) );
         }
 
-            ##get the fractional parts
-            frac <- coords[,1:ncol(coords)] - floor(coords[,1:ncol(coords)]);
-            ## determine the number of bits required for each coordinate
-            nBits <- (2 * 2^(!twoChannel) * nBytes);
-            
-            ## set a multiplier based on base 2 or base 10
-            if(base2)
-                mult <- 2^nBits - 1
-            else
-                mult <- 10^(max(which(2^nBits > 10^(1:5))));           
-            
-            bits <- matrix(as.integer(matrix(sapply(round(mult * frac), FUN = intToBits), ncol = length(frac))[1:nBits,]), nrow = 8);
-            ints <- apply(bits, 2, FUN = bitsToInt);
-            ## write the integers
-            writeBin(as.integer(ints), con = con, size = 1);
-        }
+        ##get the fractional parts
+        frac <- coords[,1:ncol(coords)] - floor(coords[,1:ncol(coords)]);
+        ## determine the number of bits required for each coordinate
+        nBits <- (2 * 2^(!twoChannel) * nBytes);
+        
+        ## set a multiplier based on base 2 or base 10
+        if(base2)
+            mult <- 2^nBits - 1
+        else
+            mult <- 10^(max(which(2^nBits > 10^(1:5))));           
+        
+        bits <- matrix(as.integer(matrix(sapply(round(mult * frac), FUN = intToBits), ncol = length(frac))[1:nBits,]), nrow = 8);
+        ints <- apply(bits, 2, FUN = bitsToInt);
+        ## write the integers
+        writeBin(as.integer(ints), con = con, size = 1);
+    }
     else { ## if we aren't storing a fractional part, we should round the values
         coords <- round(coords);
         writeBin(as.integer(coords[,1:2]), con = con, size = 2);
@@ -89,7 +89,7 @@ writeIntensities <- function(intensities, con) {
     neg <- (intensities < 0)
     intensities <- abs(intensities)
     large <- (intensities > 65535)
-    intensities <- intensities %% 65535
+    intensities <- intensities %% 65536
 
     ## write the normalized intensities
     writeBin(as.integer(intensities), con = con, size = 2)
@@ -161,7 +161,7 @@ writeBabBody <- function(combined, con, twoChannel, nBytes, useOffset, base2, fu
         
         ## record the index of the locs file
         if(fullLocsIndex) {
-          writeBin(as.integer(current[, (ncol(current)-1) ]), con = con, size = 1)
+          writeBin(as.integer(current[, ncol(current) ]), con = con, size = 1)
           writeBin(as.integer(current[, ncol(current) ]), con = con, size = 2)
         }
         else {

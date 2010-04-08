@@ -23,7 +23,7 @@ applyFlags <- function(inten) {
 
     ## apply the flags to each intensity
   
-    inten[1] <- inten[1] + (inten[2] * 65535)
+    inten[1] <- inten[1] + (inten[2] * 65536)
     if(inten[3])
         inten[1] <- -inten[1]
 
@@ -53,9 +53,9 @@ readCoordinates <- function(con, nbeads, nBytes, twoChannel, offset = FALSE, bas
 
         
         ## read the integer parts.  Grn first, then Red, which may be using offsets
-        coords <- readBin(con, integer(), size = 2, n = 2*nbeads);
+        coords <- readBin(con, integer(), size = 2, n = 2*nbeads, signed = TRUE);
         if(twoChannel) {
-            coords <- c(coords, readBin(con, integer(), size = 2^(!offset), n = 2*nbeads));
+            coords <- c(coords, readBin(con, integer(), size = 2^(!offset), n = 2*nbeads, signed = TRUE));
         }
         
         if(nBytes) {

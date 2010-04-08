@@ -2,6 +2,8 @@ CHANGES IN VERSION 0.0
 
 BUG FIXES
 
+	o Fixed bug in creating full index
+
     o Fixed bug in combining .txt and .locs files due to duplicate entries
 
     o Fixed bug in writing intensity flags.  Introduced when switching from calloc() to R_alloc().
