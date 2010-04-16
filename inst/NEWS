@@ -1,8 +1,12 @@
-CHANGES IN VERSION 0.0
+CHANGES IN VERSION 0.99
 
 BUG FIXES
 
-	o Fixed bug in creating full index
+    o Improved speed when using lossy compression by switcing some code from apply() to .Call()
+
+    o Now works correctly in the case where an array consists of a single segment, e.g. Human 1M
+
+    o Fixed bug in creating full index
 
     o Fixed bug in combining .txt and .locs files due to duplicate entries
 

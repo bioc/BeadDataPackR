@@ -8,6 +8,11 @@ createIndices <- function(locs, nrow = NULL, ncol = NULL, pb = NULL)
     ## if we haven't been give the grid size, try to calculate it
     if(is.null(nrow) || is.null(ncol)) {
         segsize <- which((locs[-1,1]-locs[-length(locs[,1]),1])>100)[1]
+        
+        ## if there is only one segment (e.g. 1M arrays) when need to specify that
+        if(is.na(segsize))
+            segsize <- nrow(locs);
+        
         seg <- locs[1:segsize,]
         tempy <- which(seg[-length(seg[,2]),2]>seg[-1,2])
         nrow <- as.numeric(names(sort(table(tempy[-1]-tempy[-length(tempy)]),decreasing=T))[1]) 

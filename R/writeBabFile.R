@@ -63,7 +63,7 @@ writeCoordinates <- function(coordinates, con, twoChannel, nBytes, useOffset = F
             mult <- 10^(max(which(2^nBits > 10^(1:5))));           
         
         bits <- matrix(as.integer(matrix(sapply(round(mult * frac), FUN = intToBits), ncol = length(frac))[1:nBits,]), nrow = 8);
-        ints <- apply(bits, 2, FUN = bitsToInt);
+        ints <- .Call("bitsToInts", bits, PACKAGE = "BeadDataPackR");
         ## write the integers
         writeBin(as.integer(ints), con = con, size = 1);
     }
@@ -94,42 +94,9 @@ writeIntensities <- function(intensities, con) {
     ## write the normalized intensities
     writeBin(as.integer(intensities), con = con, size = 2)
     ## write the flags
-    ## writeIntensityFlags(neg, large, con);
-	flags <- .Call("composeIntensityFlags", as.integer(neg), as.integer(large), PACKAGE = "BeadDataPackR")
-	writeBin(as.integer(flags), con = con, size = 1);
+    flags <- .Call("composeIntensityFlags", as.integer(neg), as.integer(large), PACKAGE = "BeadDataPackR")
+    writeBin(as.integer(flags), con = con, size = 1);
 }
-
-writeIntensityFlags <- function(neg, large, con) {
-
-  ## writes flags indicating whether an intensity was negative
-  ## and/or had an absolute value greater than 65535
-  
-    i = 0
-    store <- NULL;
-    end <- ( ((length(neg)-1) %/% 4) + 1) * 4
-    while( i < end ) {
-
-        negTmp <- neg[(i+4):(i+1)];
-        largeTmp <- large[(i+4):(i+1)];
-
-        ## check if we've reached then end and there aren't 4 values
-        if(length(neg) < i+4) {
-            negTmp[which(is.na(negTmp))] = 0
-            largeTmp[which(is.na(largeTmp))] = 0
-        }
-        
-        byte <- 0
-        for(j in 3:0) {
-            byte <- byte + (negTmp[j + 1] * 2^(j*2));
-            byte <- byte + (largeTmp[j + 1] * 2^(j*2 + 1))
-        }
-        #writeBin(as.integer(byte), con = con, size = 1);
-        store <- c(store, byte);
-        i = i+4;
-    }
-    writeBin(as.integer(store), con = con, size = 1);
-}
-
 
 writeBabBody <- function(combined, con, twoChannel, nBytes, useOffset, base2, fullLocsIndex, pb) {
            

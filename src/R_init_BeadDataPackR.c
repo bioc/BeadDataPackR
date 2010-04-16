@@ -8,6 +8,7 @@ static const R_CallMethodDef callMethods[] =
     {"decodeInd", (DL_FUNC)&decodeInd, 1},
     {"adjustValues", (DL_FUNC)&adjustValues, 1},
     {"returnTrueIndex", (DL_FUNC)&returnTrueIndex, 3},
+    {"bitsToInts", (DL_FUNC)&bitsToInts, 1},
     {NULL, NULL, 0}
     
 };

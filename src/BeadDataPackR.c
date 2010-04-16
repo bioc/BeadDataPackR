@@ -4,7 +4,7 @@
 are found in the .txt file */
 SEXP roundLocsFileValues(SEXP inputVector) {
     
-    int i, vecLength, digits;
+    int i, digits;
     double x;
     SEXP outputVector;
     
@@ -34,7 +34,7 @@ SEXP composeIntensityFlags(SEXP neg, SEXP large) {
 
 	SEXP flags;
 	int i, j, k, nBytes, *negResized, *largeResized;
-	int byte, stop, negTmp[4], largeTmp[4];
+	int byte;
 	
 	nBytes = ( (length(neg) - 1) / 4 ) + 1;
 	
@@ -52,7 +52,6 @@ SEXP composeIntensityFlags(SEXP neg, SEXP large) {
 	
 	j = 0;
 	for(i = 0; i < nBytes; i++ ) {
-	
 		byte = 0;
 		for(k = 3; k >= 0; k--) {
 			byte += ( negResized[j] * pow(2, k*2) );
@@ -148,4 +147,32 @@ SEXP returnTrueIndex(SEXP predX, SEXP predY, SEXP nrow) {
     UNPROTECT(1);
     return(trueIndex);
 }
+
+/* Convert 8 bits into ints 
+    Expects a matrix with 8 rows and 1 column per coordinate */
+SEXP bitsToInts(SEXP bitMatrix) {
+    
+    SEXP resInts;
+    int i, j, width, *res, *bm;
+      
+    width = INTEGER(getAttrib(bitMatrix, R_DimSymbol))[1];
+    /* length is the same as the number of cols in the bitMatrix */
+    PROTECT(resInts = allocVector(INTSXP, width));
+    /* set up pointers to the SEXP objects */
+    res = INTEGER(resInts);
+    bm = INTEGER(bitMatrix);
+    
+    /* loop over each element */
+    for(i = 0; i < width; i++) {
+        res[i] = 0;
+        /* loop through the 8 bits */
+        for(j = 0; j < 8; j++) {
+            res[i] += ( pow(2, j) * bm[ (i * 8) + j ] );
+        }
+    }
+    
+    UNPROTECT(1);
+    return(resInts);
+}
+    
 

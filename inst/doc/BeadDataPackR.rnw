@@ -40,7 +40,9 @@
 
 \section*{Introduction}
 
-Raw Illumina BeadArray data consists of \textit{.tif} images produced by the scanner, accompanied by \textit{.txt} and \textit{.locs} files containing details of bead locations and their intensities within the image.  For a single channel human expression array these data typically occupy $\approx$ 125MB of storage.  The size of these files can prove a hinderance to both their storage and distribution.  Whilst the images can be compressed using a variety of common tools, the \Rpackage{BeadDataPackR} package aims to provide tools for the efficient compression of the \textit{.txt} and \textit{.locs} files.
+Raw Illumina BeadArray data consists of \textit{.tif} images produced by the scanner, accompanied by \textit{.txt} and \textit{.locs} files containing details of bead locations and their intensities within the image.  For a single channel human expression array these data typically occupy $\approx$ 125MB of storage.  The size of these files can prove a hinderance to both their storage and distribution.  Whilst the images can be compressed using a variety of common tools, the \Rpackage{BeadDataPackR} package aims to provide tools for the efficient compression of the \textit{.txt} and \textit{.locs} files.\\
+
+\noindent Disclaimer:  \Rpackage{BeadDataPackR} has been tested on data from a variety of Illumina BeadArray platforms and too the best of our knowledge data compressed using lossless settings has always been restored successfully.  However, we cannot responsibility for any loss or damage to data that results from it's use.
 
 \section*{Compressing Data}
 The first step before using any of the functionality is to load the package.  For the purpose of this vignette was also get the path to the example data that is distributed with the package.
@@ -60,7 +62,7 @@ The \Rfunarg{txtFile} and \Rfunarg{locsGrn} arguments specify the names of the f
 
 The argument \Rfunarg{nBytes} specifies how many bytes should be used to store the fractional parts of the bead coordinates. For a single channel array the maximum value is 4 (8 for a two channel array).  If the maximum value is used the coordinates are stored in the \textit{.bab} file as single precision floating point numbers, as they are in the \textit{.locs} files.  If a value smaller than the maximum is choosen then the integer parts of each coordinate are stored seperately.  The requested number of bytes are then used to store the fractional parts, with a corresponding loss of precision as the number of bytes decreases.
 
-The \Rfunarg{nrow} and \Rfunarg{ncol} arguments can normally be left blank.  They specify the dimensions of each grid segment on the array and, if left blank, can normally be infered from the grid coordinates.  However, this can fail for particularly small grids, such as in this example data.  If one wants or needs to specify them explicitly, these values can be found in the \textit{.sdf} which accompanies the bead level output from the scanner.  The number of columns and rows per segment can be found within the tags \texttt{<SizeGridX>} and \texttt{<SizeGridY>} respectively.
+The \Rfunarg{nrow} and \Rfunarg{ncol} arguments can normally be left blank.  They specify the dimensions of each grid segment on the array and, if left blank, can normally be infered from the grid coordinates.  However, this can fail for particularly small grids or cases of misregistration where segments overlap.  If one wants or needs to specify them explicitly, these values can be found in the \textit{.sdf} which accompanies the bead level output from the scanner.  The number of columns and rows per segment can be found within the tags \texttt{<SizeGridX>} and \texttt{<SizeGridY>} respectively.
 
 \section*{Decompressing Data}
 
