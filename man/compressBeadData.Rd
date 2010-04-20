@@ -8,7 +8,9 @@
     Given raw bead level data, in the form of .txt and .locs file, this function combines the two producing a new file with the data stored in a compressed format.
 }
 \usage{
-    compressBeadData(txtFile, locsGrn, locsRed = NULL, outputFile = NULL, path = NULL, nBytes = 8, base2 = TRUE, fullLocsIndex = FALSE, nrow = NULL, ncol = NULL)
+compressBeadData(txtFile, locsGrn, locsRed = NULL, outputFile = NULL,
+                 path = NULL, nBytes = 8, base2 = TRUE, fullLocsIndex = FALSE,
+                 nrow = NULL, ncol = NULL, progressBar = TRUE)
 }
 
 \arguments{
@@ -25,7 +27,7 @@
     Name of the file to be created.
 }
 \item{path}{
-    Path to where the input files can be found.  If NULL the current working directory is used.
+    Path to where the input files can be found.  If NULL the current working directory is used.  This is also the directory where the output files will be written.
 }
 \item{nBytes}{
     Gives the number of bytes that are used to store the fractional parts of the bead coordinates.  For a single channel array the maximum value is 4, whilst it is 8 for a two channel array.  Any number larger than this is automatically set the the maximum value.  If the maximum value is used the coordinates are stored in the .bab file as single precision floating point numbers, as they are in the .locs files.  If a value smaller than the maximum is choosen then the integer parts of each coordinate are stored seperately.  The requested number of bytes are then used to store the fractional parts, with a corresponding loss of precision as the number of bytes decreases.
@@ -42,6 +44,9 @@
 \item{nrow}{
     See ncol.  If needed can be found within the <SizeGridY> tag in the .sdf file.
 }
+\item{progressBar}{
+    By default the function uses a \code{\link[utils]{txtProgressBar}} to indicate progress through the compression.  Setting this argument to FALSE supresses the drawing of this progress bar.
+}
 }
 
 \value{
@@ -49,7 +54,7 @@
 }
 
 \details{
-    In the future the file names will be determined automatically, rather than requiring manual entry of each.
+    In the future the file names will be determined automatically, rather than requiring manual entry of each.  The path argument may also be amended so there are seperate options for the locations of the input and output files.
 }
 
 \author{

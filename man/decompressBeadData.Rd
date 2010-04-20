@@ -8,7 +8,8 @@
     Decompressed a file create by BeadDataPackR.  The original files that were compressed will be restored as accurately as possible, depending upon the degree of precision specified during the compression.
 }
 \usage{
-decompressBeadData(inputFile, inputPath = ".", outputMask = NULL, outputPath = ".", outputNonDecoded = FALSE, roundValues = TRUE)
+decompressBeadData(inputFile, inputPath = ".", outputMask = NULL, outputPath = ".",
+                   outputNonDecoded = FALSE, roundValues = TRUE, progressBar = TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -27,8 +28,11 @@ decompressBeadData(inputFile, inputPath = ".", outputMask = NULL, outputPath = "
 \item{outputNonDecoded}{
     If TRUE the undecoded beads will be included in the output .txt file.  They will have ProbeID 0 and intensity 0, but the bead centre coordinates will be included.
 }
-  \item{roundValues}{
-	The original Illumina text files give the bead centre coordinates to 7 significant figures.  When this argument is TRUE decompressed files are also truncated in this manner, whilst FALSE writes them to the full precision they are stored in the compressed file.
+\item{roundValues}{
+    The original Illumina text files give the bead centre coordinates to 7 significant figures.  When this argument is TRUE decompressed files are also truncated in this manner, whilst FALSE writes them to the full precision they are stored in the compressed file.
+}
+\item{progressBar}{
+    By default the function uses a \code{\link[utils]{txtProgressBar}} to indicate progress through the compression.  Setting this argument to FALSE supresses the drawing of this progress bar.
 }
 }
 
@@ -41,8 +45,8 @@ decompressBeadData(inputFile, inputPath = ".", outputMask = NULL, outputPath = "
 }
 
 \examples{ 
-        dataPath <- system.file("data", package = "BeadDataPackR")
-        decompressBeadData(inputFile = "example.bab", inputPath = dataPath, outputPath = ".")
+    dataPath <- system.file("data", package = "BeadDataPackR")
+    decompressBeadData(inputFile = "example.bab", inputPath = dataPath, outputPath = ".")
 }
 
 \keyword{ IO }

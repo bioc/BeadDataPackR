@@ -1,20 +1,26 @@
 compressBeadData <-
-function(txtFile, locsGrn, locsRed = NULL, outputFile = NULL, path = NULL, nBytes = 8, base2 = TRUE, fullLocsIndex = FALSE, nrow = NULL, ncol = NULL) {
+function(txtFile, locsGrn, locsRed = NULL, outputFile = NULL, path = NULL, nBytes = 8, base2 = TRUE, fullLocsIndex = FALSE, nrow = NULL, ncol = NULL, progressBar = TRUE) {
 
     message(paste("\nCompressing", strsplit(txtFile, ".txt")));
-    pb <- txtProgressBar(style=3)
-    setTxtProgressBar(pb, 0.01)
-
+    
+    if(progressBar) {
+        pb <- txtProgressBar(style=3)
+        setTxtProgressBar(pb, 0.01)
+    }
+    else { 
+        pb <- NULL
+    }
+    
     ## set the default name for the output file if one isn't specified
     if(is.null(outputFile))
-      outputFile <- paste(strsplit(txtFile, ".txt"), "bab", sep = ".");
+        outputFile <- paste(strsplit(txtFile, ".txt"), "bab", sep = ".");
     
     ## identify the correct path to each of the file
     if(!is.null(path)) {
-      txtFile <- file.path(path, txtFile);
-      locsGrn <- file.path(path, locsGrn);
-      outputFile <- file.path(path, outputFile);
-      if(!is.null(locsRed))
+        txtFile <- file.path(path, txtFile);
+        locsGrn <- file.path(path, locsGrn);
+        outputFile <- file.path(path, outputFile);
+        if(!is.null(locsRed))
         locsRed <- file.path(path, locsRed)
     }
 
@@ -24,46 +30,46 @@ function(txtFile, locsGrn, locsRed = NULL, outputFile = NULL, path = NULL, nByte
 
     ## is this two channel?
     if(is.null(locsRed)) {
-      twoChannel = FALSE
-      ## makes sure we aren't using excessive bytes in the one channel case
-      if(nBytes > 4) #message("For single channel data a maximum of 4 bytes can be specified");
-      nBytes <- min(4, nBytes); 
+        twoChannel = FALSE
+        ## makes sure we aren't using excessive bytes in the one channel case
+        if(nBytes > 4) #message("For single channel data a maximum of 4 bytes can be specified");
+            nBytes <- min(4, nBytes); 
     }
     else 
-      twoChannel = TRUE
+        twoChannel = TRUE
       
     ## read the data
     txt <- readBeadLevelTextFile(txtFile);
-    setTxtProgressBar(pb, 0.05)
+    if(progressBar) setTxtProgressBar(pb, 0.05)
     locsGrn <- readLocsFile(locsGrn);
     if(twoChannel)
       locsRed <- readLocsFile(locsRed);
 
-    setTxtProgressBar(pb, 0.1)
+    if(progressBar) setTxtProgressBar(pb, 0.1)
     
     ## combine the files and identify non-decoded beads
     combined <- combineFiles(txt, locsGrn, locsRed, pb = pb);
     
-    setTxtProgressBar(pb, 0.5)
+    if(progressBar) setTxtProgressBar(pb, 0.5)
     
     ## if we're using the fitted grid then do it
     if(!fullLocsIndex) {
-      res <- createIndices(locsGrn, ncol, nrow, pb = pb);
-      ## replace coordinates with shifted ones
-      shifts <- res[[3]][seq(1,length(res[[3]]), 3)]
-      if(any(as.logical(shifts))) {
-          message("DEBUG: applying shifts");
-          ## find which segments need to be shifted
-          shiftIdx <- which(as.logical(shifts))
-          for(i in shiftIdx) {
-              ## find the beads in those segments
-              segIdx <- which( (combined[,ncol(combined)] > (i*res[[5]][4] + 1)) & (combined[,ncol(combined)] < ((i+1)*res[[5]][4])) );
-              ## shift them appropriately
-              combined[segIdx,4] <- combined[segIdx,4] + shifts[i];
-          }
-      }
-      indices <- (16 * res[[2]][,1]) + res[[2]][,2];
-      setTxtProgressBar(pb, 0.65)
+        res <- createIndices(locsGrn, ncol, nrow, pb = pb);
+        ## replace coordinates with shifted ones
+        shifts <- res[[3]][seq(1,length(res[[3]]), 3)]
+        if(any(as.logical(shifts))) {
+            message("DEBUG: applying shifts");
+            ## find which segments need to be shifted
+            shiftIdx <- which(as.logical(shifts))
+            for(i in shiftIdx) {
+                ## find the beads in those segments
+                segIdx <- which( (combined[,ncol(combined)] > (i*res[[5]][4] + 1)) & (combined[,ncol(combined)] < ((i+1)*res[[5]][4])) );
+                ## shift them appropriately
+                combined[segIdx,4] <- combined[segIdx,4] + shifts[i];
+            }
+        }
+        indices <- (16 * res[[2]][,1]) + res[[2]][,2];
+        if(progressBar) setTxtProgressBar(pb, 0.65)
     }
     
     ## if we're using a full index, reduce its size by one byte per bead
@@ -90,13 +96,15 @@ function(txtFile, locsGrn, locsRed = NULL, outputFile = NULL, path = NULL, nByte
     ## write the name of the array
     writeArrayName(txtFile, con = con);
   
-    setTxtProgressBar(pb, 0.7)
+    if(progressBar) setTxtProgressBar(pb, 0.7)
     
     ## write the body of the file
     writeBabBody(combined, con = con, twoChannel = twoChannel, nBytes = nBytes, useOffset = useOffset, base2 = base2, fullLocsIndex = fullLocsIndex, pb = pb);     
     close(con);
     
-    setTxtProgressBar(pb, 1);
-    close(pb);
+    if(progressBar) {
+        setTxtProgressBar(pb, 1);
+        close(pb);
+    }
 }
 

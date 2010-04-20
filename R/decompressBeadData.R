@@ -1,9 +1,14 @@
-decompressBeadData <- function(inputFile, inputPath = ".", outputMask = NULL, outputPath = ".", outputNonDecoded = FALSE, roundValues = TRUE)
+decompressBeadData <- function(inputFile, inputPath = ".", outputMask = NULL, outputPath = ".", outputNonDecoded = FALSE, roundValues = TRUE, progressBar = TRUE)
 {
     
     message(paste("\nDecompressing", inputFile));
-    pb <- txtProgressBar(style=3)
-    setTxtProgressBar(pb, 0.00)
+    if(progressBar) {
+        pb <- txtProgressBar(style=3)
+        setTxtProgressBar(pb, 0.00)
+    }
+    else {
+        pb <- NULL;
+    }
     
     ## open connection to the binary file and inform the user
     con <- file(paste(inputPath, inputFile, sep = .Platform$file.sep), "rb");
@@ -25,7 +30,7 @@ decompressBeadData <- function(inputFile, inputPath = ".", outputMask = NULL, ou
       locs <- matrix(ncol = 5, nrow = header$nBeads);
     }
     
-    setTxtProgressBar(pb, 0.02)
+    if(progressBar) { setTxtProgressBar(pb, 0.02) }
     
     ## create a counter so we know where in the results matrix we stick the next results
     pos <- 1
@@ -33,9 +38,10 @@ decompressBeadData <- function(inputFile, inputPath = ".", outputMask = NULL, ou
     for(i in 1:header$nProbeIDs) {
       
         ## update the progress bar
-        if(i %/% 1000)
-            setTxtProgressBar(pb, 0.02 + (0.73 * i/header$nProbeIDs))
-        
+        if(progressBar) {
+            if(i %/% 1000)
+                setTxtProgressBar(pb, 0.02 + (0.73 * i/header$nProbeIDs))
+        }
         ## first 4 bytes are probeID, second are the number of beads of that type
         probeID <- readBin(con, integer(), size = 4);
         nbeads <- readBin(con, integer(), size = 4); 
@@ -110,13 +116,16 @@ decompressBeadData <- function(inputFile, inputPath = ".", outputMask = NULL, ou
     ## write the output files
     write.table(txt, file = paste(outputPath, paste(outputMask, ".txt", sep = ""), sep = .Platform$file.sep), sep = "\t", quote = FALSE, row.names = FALSE)
     
-    setTxtProgressBar(pb, 0.95);
+    if(progressBar) { setTxtProgressBar(pb, 0.95) };
     
     writeLocsFile(file = paste(outputPath, paste(outputMask, "_Grn.locs", sep = ""), sep = .Platform$file.sep), t(locs[,1:2]), nBeads = header$nBeads);
     if(header$twoChannel) {
       writeLocsFile(file = paste(outputPath, paste(outputMask, "_Red.locs", sep =""), sep = .Platform$file.sep), t(locs[,3:4]), nBeads = header$nBeads);
     }
-    setTxtProgressBar(pb, 1);
-    close(pb);
+    
+    if(progressBar) {
+        setTxtProgressBar(pb, 1);
+        close(pb);
+    }
 }
 
