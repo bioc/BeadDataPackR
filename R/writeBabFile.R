@@ -42,14 +42,7 @@ writeCoordinates <- function(coordinates, con, twoChannel, nBytes, useOffset = F
     }
     ## if not, start compressing
     else if(nBytes) {
-        ## record the integer parts
-        writeBin(as.integer(coords[,1:2]), con = con, size = 2);
-        
-        if(twoChannel) {
-            if(useOffset) 
-                coords[,3:4] <- coords[,3:4] - floor(coords[,1:2]);
-            writeBin(as.integer(coords[,3:4]), con = con, size = 2^(!useOffset) );
-        }
+
 
         ##get the fractional parts
         frac <- coords[,1:ncol(coords)] - floor(coords[,1:ncol(coords)]);
@@ -58,13 +51,31 @@ writeCoordinates <- function(coordinates, con, twoChannel, nBytes, useOffset = F
         
         ## set a multiplier based on base 2 or base 10
         if(base2)
-            mult <- 2^nBits - 1
+            mult <- 2^nBits
         else
             mult <- 10^(max(which(2^nBits > 10^(1:5))));           
         
-        bits <- matrix(as.integer(matrix(sapply(round(mult * frac), FUN = intToBits), ncol = length(frac))[1:nBits,]), nrow = 8);
+        tmpInts <- round(mult * frac);
+        ## deal with any cases that have been rounded to the maximal value
+        ## we want to increment the integer part in this case
+        if(any(tmpInts == mult)) {
+            idx <- which(tmpInts == mult)
+            coords[idx] = coords[idx] + 1;
+            tmpInts[idx] = 0;
+        }
+        ## break those ints into blocks of 8 bits and then back to integers
+        bits <- matrix(as.integer(matrix(sapply(tmpInts, FUN = intToBits), ncol = length(frac))[1:nBits,]), nrow = 8);
         ints <- .Call("bitsToInts", bits, PACKAGE = "BeadDataPackR");
-        ## write the integers
+          
+        ## record the integer parts
+        writeBin(as.integer(coords[,1:2]), con = con, size = 2); 
+        if(twoChannel) {
+            if(useOffset) 
+                coords[,3:4] <- coords[,3:4] - floor(coords[,1:2]);
+            writeBin(as.integer(coords[,3:4]), con = con, size = 2^(!useOffset) );
+        }       
+        
+        ## now write the fractional data
         writeBin(as.integer(ints), con = con, size = 1);
     }
     else { ## if we aren't storing a fractional part, we should round the values

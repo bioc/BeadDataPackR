@@ -65,9 +65,9 @@ readCoordinates <- function(con, nbeads, nBytes, twoChannel, offset = FALSE, bas
             
             ## set a multiplier based on base 2 or base 10
             if(base2)
-                div <- 2^nBits - 1
+                div <- 2^nBits
             else
-                div <- 10^(min(which(2^nBits < 10^(1:5)))-1);
+                div <- 10^(min(which(2^nBits < 10^(1:5))));
             
             ## read the stored fractional parts
             tmp <- readBin(con, integer(), size = 1, n = nBytes * nbeads, signed = FALSE);
