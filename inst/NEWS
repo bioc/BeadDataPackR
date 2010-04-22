@@ -2,6 +2,8 @@ CHANGES IN VERSION 0.99
 
 BUG FIXES
 
+	o Fixed bug which put red channel out by 1 pixel when using offset coordinates
+
     o Improved speed when using lossy compression by switcing some code from apply() to .Call()
 
     o Now works correctly in the case where an array consists of a single segment, e.g. Human 1M

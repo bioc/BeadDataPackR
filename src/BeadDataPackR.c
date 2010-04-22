@@ -5,13 +5,14 @@ are found in the .txt file */
 SEXP roundLocsFileValues(SEXP inputVector) {
     
     int i, digits;
-    double x;
+    double x, *inVec;
     SEXP outputVector;
     
+    inVec = REAL(inputVector);
     PROTECT(outputVector = allocVector(REALSXP, length(inputVector)));
     
     for(i = 0; i < length(inputVector); i++) {
-        x = REAL(inputVector)[i];
+        x = inVec[i];
         /* the precison of the rounding is determined by the integer part of the value */
         if(x >= 10000)
             digits = 2;
@@ -24,7 +25,7 @@ SEXP roundLocsFileValues(SEXP inputVector) {
         else
             digits = 6;
         /* perform the rounding to the required precision */
-        REAL(outputVector)[i] = round(REAL(inputVector)[i]*(pow(10,digits)))/pow(10,digits);
+        REAL(outputVector)[i] = round(inVec[i]*(pow(10,digits)))/pow(10,digits);
     }
     UNPROTECT(1);
     return(outputVector);
@@ -32,37 +33,37 @@ SEXP roundLocsFileValues(SEXP inputVector) {
 
 SEXP composeIntensityFlags(SEXP neg, SEXP large) {
 
-	SEXP flags;
-	int i, j, k, nBytes, *negResized, *largeResized;
-	int byte;
+    SEXP flags;
+    int i, j, k, nBytes, *negResized, *largeResized;
+    int byte;
 	
-	nBytes = ( (length(neg) - 1) / 4 ) + 1;
+    nBytes = ( (length(neg) - 1) / 4 ) + 1;
 	
     /* assign the vectors and set all entries to zero */
-	negResized = (int *) R_alloc(sizeof(int), nBytes * 4);
+    negResized = (int *) R_alloc(sizeof(int), nBytes * 4);
     memset(negResized, 0, sizeof(int) * nBytes * 4);
-	largeResized = (int *) R_alloc(sizeof(int), nBytes * 4);
+    largeResized = (int *) R_alloc(sizeof(int), nBytes * 4);
     memset(largeResized, 0, sizeof(int) * nBytes * 4);
-	PROTECT(flags = allocVector(INTSXP, nBytes));	
+    PROTECT(flags = allocVector(INTSXP, nBytes));	
 	
-	for(i = 0; i < length(neg); i++) {
-		negResized[i] = INTEGER(neg)[i];
-		largeResized[i] = INTEGER(large)[i];
-	}
+    for(i = 0; i < length(neg); i++) {
+	negResized[i] = INTEGER(neg)[i];
+	largeResized[i] = INTEGER(large)[i];
+    }
 	
-	j = 0;
-	for(i = 0; i < nBytes; i++ ) {
-		byte = 0;
-		for(k = 3; k >= 0; k--) {
-			byte += ( negResized[j] * pow(2, k*2) );
-			byte += largeResized[j] * pow(2, (k*2 + 1));
-			j++;
-		}
-		INTEGER(flags)[i] = byte;
+    j = 0;
+    for(i = 0; i < nBytes; i++ ) {
+	byte = 0;
+	for(k = 3; k >= 0; k--) {
+            byte += ( negResized[j] * pow(2, k*2) );
+            byte += largeResized[j] * pow(2, (k*2 + 1));
+            j++;
 	}
+	INTEGER(flags)[i] = byte;
+    }
 
-	UNPROTECT(1);
-	return(flags);
+    UNPROTECT(1);
+    return(flags);
 }
 
 SEXP int2Bits(SEXP flags) {
@@ -148,13 +149,15 @@ SEXP returnTrueIndex(SEXP predX, SEXP predY, SEXP nrow) {
     return(trueIndex);
 }
 
-/* Convert 8 bits into ints 
-    Expects a matrix with 8 rows and 1 column per coordinate */
+/*  Convert bit strings into ints 
+    Expects a matrix with 1 column per coordinate 
+    and as many rows as there are bits */
 SEXP bitsToInts(SEXP bitMatrix) {
     
     SEXP resInts;
-    int i, j, width, *res, *bm;
+    int i, j, nBits, width, *res, *bm;
       
+    nBits = INTEGER(getAttrib(bitMatrix, R_DimSymbol))[0];
     width = INTEGER(getAttrib(bitMatrix, R_DimSymbol))[1];
     /* length is the same as the number of cols in the bitMatrix */
     PROTECT(resInts = allocVector(INTSXP, width));
@@ -165,9 +168,9 @@ SEXP bitsToInts(SEXP bitMatrix) {
     /* loop over each element */
     for(i = 0; i < width; i++) {
         res[i] = 0;
-        /* loop through the 8 bits */
-        for(j = 0; j < 8; j++) {
-            res[i] += ( pow(2, j) * bm[ (i * 8) + j ] );
+        /* loop through the bits */
+        for(j = 0; j < nBits; j++) {
+            res[i] += ( pow(2, j) * bm[ (i * nBits) + j ] );
         }
     }
     

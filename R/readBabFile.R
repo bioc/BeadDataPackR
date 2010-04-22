@@ -74,7 +74,8 @@ readCoordinates <- function(con, nbeads, nBytes, twoChannel, offset = FALSE, bas
             ## convert them to bits
             bits <- matrix(as.integer(sapply(tmp, intToBits)[1:8,]), nrow = nBits);
             ## convert back into 2/4 integers
-            frac <- apply(bits, 2, reformInt) / div;
+            #frac <- apply(bits, 2, reformInt) / div;
+            frac <- .Call("bitsToInts", bits, PACKAGE = "BeadDataPackR") / div;
             coords <- coords + frac;
         }
     }

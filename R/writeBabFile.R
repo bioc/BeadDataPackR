@@ -43,7 +43,6 @@ writeCoordinates <- function(coordinates, con, twoChannel, nBytes, useOffset = F
     ## if not, start compressing
     else if(nBytes) {
 
-
         ##get the fractional parts
         frac <- coords[,1:ncol(coords)] - floor(coords[,1:ncol(coords)]);
         ## determine the number of bits required for each coordinate
@@ -63,6 +62,7 @@ writeCoordinates <- function(coordinates, con, twoChannel, nBytes, useOffset = F
             coords[idx] = coords[idx] + 1;
             tmpInts[idx] = 0;
         }
+        
         ## break those ints into blocks of 8 bits and then back to integers
         bits <- matrix(as.integer(matrix(sapply(tmpInts, FUN = intToBits), ncol = length(frac))[1:nBits,]), nrow = 8);
         ints <- .Call("bitsToInts", bits, PACKAGE = "BeadDataPackR");
@@ -71,7 +71,7 @@ writeCoordinates <- function(coordinates, con, twoChannel, nBytes, useOffset = F
         writeBin(as.integer(coords[,1:2]), con = con, size = 2); 
         if(twoChannel) {
             if(useOffset) 
-                coords[,3:4] <- coords[,3:4] - floor(coords[,1:2]);
+                coords[,3:4] <- floor(coords[,3:4]) - floor(coords[,1:2]);
             writeBin(as.integer(coords[,3:4]), con = con, size = 2^(!useOffset) );
         }       
         
