@@ -1,4 +1,4 @@
-scanBabFile <- function(inputFile, inputPath = ".", probeIDs = NULL)
+readCompressedData <- function(inputFile, path = ".", probeIDs = NULL)
 {
 
     ## sort the probeIDs.  The bab file is sorted in increasing numerical order
@@ -6,7 +6,7 @@ scanBabFile <- function(inputFile, inputPath = ".", probeIDs = NULL)
         probeIDs <- sort(unique(probeIDs));
   
     ## open connection to the binary file
-    con <- file(paste(inputPath, inputFile, sep = .Platform$file.sep), "rb");
+    con <- file(paste(path, inputFile, sep = .Platform$file.sep), "rb");
 
     ## read the file header
     header <- readHeader(con);
