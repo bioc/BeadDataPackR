@@ -4,6 +4,8 @@ NEW FEATURES
 
     o Added function readCompressedData()
 
+	o decompressBeadData() will now take a vector of input files, rather than requiring a loop.
+
 
 CHANGES IN VERSION 0.99
 
