@@ -17,18 +17,18 @@ decompressBeadData <- function(input, inputPath = ".", outputMask = NULL, output
         ## read the number of unique probes and the total number of probes in the file
         header <- readHeader(con);
         if(is.null(outputMask))
-        outputMask <- header$arrayName
+            outputMask <- header$arrayName
         
         ## create a matrix to hold the results
         if(!header$twoChannel) {
-        txt <- matrix(ncol = 4, nrow = header$nBeads)
-        colnames(txt) <- c("Code", "Grn", "GrnX", "GrnY")
-        locs <- matrix(ncol = 3, nrow = header$nBeads);
+            txt <- matrix(ncol = 4, nrow = header$nBeads)
+            colnames(txt) <- c("Code", "Grn", "GrnX", "GrnY")
+            locs <- matrix(ncol = 3, nrow = header$nBeads);
         }
         else {
-        txt <- matrix(ncol = 7, nrow = header$nBeads)
-        colnames(txt) <- c("Code", "Grn", "GrnX", "GrnY", "Red", "RedX", "RedY")
-        locs <- matrix(ncol = 5, nrow = header$nBeads);
+            txt <- matrix(ncol = 7, nrow = header$nBeads)
+            colnames(txt) <- c("Code", "Grn", "GrnX", "GrnY", "Red", "RedX", "RedY")
+            locs <- matrix(ncol = 5, nrow = header$nBeads);
         }
         
         if(progressBar) { setTxtProgressBar(pb, 0.02) }
@@ -41,7 +41,7 @@ decompressBeadData <- function(input, inputPath = ".", outputMask = NULL, output
             ## update the progress bar
             if(progressBar) {
                 if(i %/% 1000)
-                    setTxtProgressBar(pb, 0.02 + (0.73 * i/header$nProbeIDs))
+                    setTxtProgressBar(pb, 0.02 + (0.63 * i/header$nProbeIDs))
             }
             ## first 4 bytes are probeID, second are the number of beads of that type
             probeID <- readBin(con, integer(), size = 4);
@@ -99,13 +99,13 @@ decompressBeadData <- function(input, inputPath = ".", outputMask = NULL, output
         }
         
         if(!header$indexingMethod) {
-        decoded <- decodeIndices(locs[,1], locs[,2:3], header$nSegs, header$marks, header$coeffs, pb = pb);
-        locs[,2:3] <- reformCoordinates(locs[,2:3], header$nSegs, header$marks);
-        txt[,3:4] <- reformCoordinates(txt[,3:4], header$nSegs, header$marks);
-        locs <- locs[decoded,2:(ncol(locs))]
+            decoded <- decodeIndices(locs[,1], locs[,2:3], header$nSegs, header$marks, header$coeffs, pb = pb);
+            locs[,2:3] <- reformCoordinates(locs[,2:3], header$nSegs, header$marks);
+            txt[,3:4] <- reformCoordinates(txt[,3:4], header$nSegs, header$marks);
+            locs <- locs[decoded,2:(ncol(locs))]
         }
         else {
-        locs <- locs[order(locs[,1]), 2:(ncol(locs))];
+            locs <- locs[order(locs[,1]), 2:(ncol(locs))];
         }
 
 
@@ -117,7 +117,7 @@ decompressBeadData <- function(input, inputPath = ".", outputMask = NULL, output
         ## write the output files
         write.table(txt, file = paste(outputPath, paste(outputMask, ".txt", sep = ""), sep = .Platform$file.sep), sep = "\t", quote = FALSE, row.names = FALSE)
         
-        if(progressBar) { setTxtProgressBar(pb, 0.95) };
+        if(progressBar) { setTxtProgressBar(pb, 0.90) };
         
         writeLocsFile(file = paste(outputPath, paste(outputMask, "_Grn.locs", sep = ""), sep = .Platform$file.sep), t(locs[,1:2]), nBeads = header$nBeads);
         if(header$twoChannel) {

@@ -90,7 +90,7 @@ decodeIndices <- function(indices, locs, nSegs, marks, coefficients, pb = NULL) 
     for(i in 1:nSegs) {
     
         if(!is.null(pb))
-            setTxtProgressBar(pb, 0.75 + (0.15 * i / nSegs));
+            setTxtProgressBar(pb, 0.65 + (0.1 * i / nSegs));
         
         ## extract the beads in this segment
         idx <- which( (locs[,2] >= marks[(3 * i) - 1]) & (locs[,2] <= marks[(3 * i)] ) )

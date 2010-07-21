@@ -31,6 +31,33 @@ SEXP roundLocsFileValues(SEXP inputVector) {
     return(outputVector);
 }
 
+/* applies the intensity flags */
+SEXP applyFlags(SEXP flagsMat) {
+    
+    int i, nrow;
+    int *fp = INTEGER(flagsMat);
+    int *outVec;
+    SEXP outputVector;
+
+    nrow = INTEGER(getAttrib(flagsMat, R_DimSymbol))[0];
+    PROTECT(outputVector = allocVector(INTSXP, nrow));
+    outVec = INTEGER(outputVector);
+
+    for(i = 0; i < nrow; i++) {
+        outVec[i] = 0;
+    }
+    
+    for(i = 0; i < nrow; i++) {
+        outVec[i] = fp[i] + (fp[nrow + i] * 65536);
+        if(fp[(nrow * 2) + i] == 1) {
+            outVec[i] *= -1;
+        }
+    }
+
+    UNPROTECT(1);
+    return(outputVector);
+}
+
 SEXP composeIntensityFlags(SEXP neg, SEXP large) {
 
     SEXP flags;

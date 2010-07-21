@@ -38,8 +38,8 @@ readIntensities <- function(con, nbeads)
     ## get the bits we're interested in
     flags2 <- .Call("int2Bits", as.integer(flags), PACKAGE = "BeadDataPackR");
     flags3 <- matrix(c(inten, flags2[1:length(inten),]), ncol = 3)
-    
-    inten <- apply(flags3, 1, applyFlags)  
+
+    inten <- .Call("applyFlags", flags3, PACKAGE = "BeadDataPackR")
     return(inten)
 }
 
@@ -51,7 +51,6 @@ readCoordinates <- function(con, nbeads, nBytes, twoChannel, offset = FALSE, bas
     }
     else {
 
-        
         ## read the integer parts.  Grn first, then Red, which may be using offsets
         coords <- readBin(con, integer(), size = 2, n = 2*nbeads, signed = TRUE);
         if(twoChannel) {
@@ -74,7 +73,6 @@ readCoordinates <- function(con, nbeads, nBytes, twoChannel, offset = FALSE, bas
             ## convert them to bits
             bits <- matrix(as.integer(sapply(tmp, intToBits)[1:8,]), nrow = nBits);
             ## convert back into 2/4 integers
-            #frac <- apply(bits, 2, reformInt) / div;
             frac <- .Call("bitsToInts", bits, PACKAGE = "BeadDataPackR") / div;
             coords <- coords + frac;
         }
