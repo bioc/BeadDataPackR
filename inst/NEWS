@@ -8,7 +8,23 @@ NEW FEATURES
 
     o Reduced decompression time by about 50% by using .Call() rather than apply()
 
+    o Added ensureSamePixel arguement to compressBeadData(), to make sure the same pixels are used in subseqent foreground calculation.
+
+BUG FIXES
+
+    o Now stops and informs the user if there are negative coordinates in the .locs file.
+
+
+
 CHANGES IN VERSION 0.99
+
+NEW FEATURES
+
+    o Improved speed when using lossy compression by switcing some code from apply() to .Call()
+
+    o Progress bar is now optional
+
+    o Package created
 
 BUG FIXES
 
@@ -31,11 +47,3 @@ BUG FIXES
     o Replaced calloc() with R_alloc() in C code
     
     o Registered C functions
-
-NEW FEATURES
-
-    o Improved speed when using lossy compression by switcing some code from apply() to .Call()
-
-    o Progress bar is now optional
-
-    o Package created

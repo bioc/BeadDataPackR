@@ -1,5 +1,4 @@
-compressBeadData <-
-function(txtFile, locsGrn, locsRed = NULL, outputFile = NULL, path = NULL, nBytes = 8, base2 = TRUE, fullLocsIndex = FALSE, nrow = NULL, ncol = NULL, progressBar = TRUE) {
+compressBeadData <- function(txtFile, locsGrn, locsRed = NULL, outputFile = NULL, path = NULL, nBytes = 8, base2 = TRUE, fullLocsIndex = FALSE, ensureSamePixel = FALSE, nrow = NULL, ncol = NULL, progressBar = TRUE) {
 
     message(paste("\nCompressing", strsplit(txtFile, ".txt")));
     
@@ -37,13 +36,17 @@ function(txtFile, locsGrn, locsRed = NULL, outputFile = NULL, path = NULL, nByte
     }
     else 
         twoChannel = TRUE
-      
+
     ## read the data
     txt <- readBeadLevelTextFile(txtFile);
     if(progressBar) setTxtProgressBar(pb, 0.05)
     locsGrn <- readLocsFile(locsGrn);
     if(twoChannel)
       locsRed <- readLocsFile(locsRed);
+
+    ## check there aren't any negative coordinates.  If there are stop and inform the user
+    if( any(locsGrn < 0) || any(locsRed < 0) )
+        stop("Negative coordinates found in .locs file\nBeadDataPackR cannot currently compress such arrays");
 
     if(progressBar) setTxtProgressBar(pb, 0.1)
     
@@ -99,7 +102,7 @@ function(txtFile, locsGrn, locsRed = NULL, outputFile = NULL, path = NULL, nByte
     if(progressBar) setTxtProgressBar(pb, 0.7)
     
     ## write the body of the file
-    writeBabBody(combined, con = con, twoChannel = twoChannel, nBytes = nBytes, useOffset = useOffset, base2 = base2, fullLocsIndex = fullLocsIndex, pb = pb);     
+    writeBabBody(combined, con = con, twoChannel = twoChannel, nBytes = nBytes, useOffset = useOffset, base2 = base2, ensureSamePixel = ensureSamePixel, fullLocsIndex = fullLocsIndex, pb = pb);     
     close(con);
     
     if(progressBar) {

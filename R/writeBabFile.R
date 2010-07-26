@@ -27,7 +27,7 @@ writeArrayName <- function(txtFile, con)
 
 }
 
-writeCoordinates <- function(coordinates, con, twoChannel, nBytes, useOffset = FALSE, base2 = FALSE) {
+writeCoordinates <- function(coordinates, con, twoChannel, nBytes, useOffset = FALSE, base2 = FALSE, ensureSamePixel = TRUE) {
  
     ## formating to deal with cases where there is only one bead
     if(twoChannel) 
@@ -55,6 +55,11 @@ writeCoordinates <- function(coordinates, con, twoChannel, nBytes, useOffset = F
             mult <- 10^(max(which(2^nBits > 10^(1:5))));           
         
         tmpInts <- round(mult * frac);
+        ## if we want to ensure the same pixel is used we fix it here
+        if(any(tmpInts == 0) && ensureSamePixel) {
+            idx <- which( (tmpInts == 0) & (frac != 0) );
+            tmpInts[idx] <- 1;
+        }
         ## deal with any cases that have been rounded to the maximal value
         ## we want to increment the integer part in this case
         if(any(tmpInts == mult)) {
@@ -109,7 +114,7 @@ writeIntensities <- function(intensities, con) {
     writeBin(as.integer(flags), con = con, size = 1);
 }
 
-writeBabBody <- function(combined, con, twoChannel, nBytes, useOffset, base2, fullLocsIndex, pb) {
+writeBabBody <- function(combined, con, twoChannel, nBytes, useOffset, base2, ensureSamePixel, fullLocsIndex, pb) {
            
     ## use the index to create a list, each elemet having probes of one type
     divided <- split(combined, combined[,1])
@@ -131,20 +136,20 @@ writeBabBody <- function(combined, con, twoChannel, nBytes, useOffset, base2, fu
         
         ## now record the coordinates      
         if(twoChannel) {
-            writeCoordinates(current[,c(3,4,6,7)], con = con, twoChannel = twoChannel, nBytes = nBytes, useOffset = useOffset, base2 = base2);
+            writeCoordinates(current[,c(3,4,6,7)], con = con, twoChannel = twoChannel, nBytes = nBytes, useOffset = useOffset, base2 = base2, ensureSamePixel = ensureSamePixel);
         }
         else {
-            writeCoordinates(current[,3:4], con = con, twoChannel = twoChannel, nBytes = nBytes, useOffset = useOffset, base2 = base2);
+            writeCoordinates(current[,3:4], con = con, twoChannel = twoChannel, nBytes = nBytes, useOffset = useOffset, base2 = base2, ensureSamePixel = ensureSamePixel);
         }
         
         ## record the index of the locs file
         if(fullLocsIndex) {
-          writeBin(as.integer(current[, ncol(current) ]), con = con, size = 1)
-          writeBin(as.integer(current[, ncol(current) ]), con = con, size = 2)
+            writeBin(as.integer(current[, ncol(current) ]), con = con, size = 1)
+            writeBin(as.integer(current[, ncol(current) ]), con = con, size = 2)
         }
         else {
-          writeBin(as.integer(current[, ncol(current) ]), con = con, size = 1);
-         }
+            writeBin(as.integer(current[, ncol(current) ]), con = con, size = 1);
+        }
           
     }
 }
