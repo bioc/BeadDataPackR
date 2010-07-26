@@ -83,8 +83,9 @@ writeCoordinates <- function(coordinates, con, twoChannel, nBytes, useOffset = F
         ## now write the fractional data
         writeBin(as.integer(ints), con = con, size = 1);
     }
-    else { ## if we aren't storing a fractional part, we should ceiling the values
-        coords <- ceiling(coords);
+    else { ## if we aren't storing a fractional part, we should round/ceiling the values
+        coords <- switch(ensureSamePixel, TRUE = ceiling(coords), FALSE = round(coords));
+        
         writeBin(as.integer(coords[,1:2]), con = con, size = 2);
         
         if(twoChannel) {
