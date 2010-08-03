@@ -44,8 +44,9 @@ decompressBeadData <- function(input, inputPath = ".", outputMask = NULL, output
                     setTxtProgressBar(pb, 0.02 + (0.63 * i/header$nProbeIDs))
             }
             ## first 4 bytes are probeID, second are the number of beads of that type
-            probeID <- readBin(con, integer(), size = 4);
-            nbeads <- readBin(con, integer(), size = 4); 
+            storeTmp <- readBin(con, integer(), size = 4, n = 2);
+            probeID <- storeTmp[1];
+            nbeads <- storeTmp[2];
             posEnd <- pos+nbeads-1
             
             ## fill in the probeIDs and intensities
@@ -69,11 +70,11 @@ decompressBeadData <- function(input, inputPath = ".", outputMask = NULL, output
             }      
 
             if(header$indexingMethod) {
-            locs[pos:posEnd, 1] <- readBin(con, integer(), size = 1, n = nbeads, signed = FALSE) * 65536;
-            locs[pos:posEnd, 1] <- locs[pos:posEnd, 1] + readBin(con, integer(), size = 2, n = nbeads, signed = FALSE)
+                locs[pos:posEnd, 1] <- readBin(con, integer(), size = 1, n = nbeads, signed = FALSE) * 65536;
+                locs[pos:posEnd, 1] <- locs[pos:posEnd, 1] + readBin(con, integer(), size = 2, n = nbeads, signed = FALSE)
             }
             else {
-            locs[pos:posEnd, 1] <- readBin(con, integer(), size = 1, n = nbeads, signed = FALSE)
+                locs[pos:posEnd, 1] <- readBin(con, integer(), size = 1, n = nbeads, signed = FALSE)
             }
 
             ## update the current position
@@ -107,9 +108,7 @@ decompressBeadData <- function(input, inputPath = ".", outputMask = NULL, output
         else {
             locs <- locs[order(locs[,1]), 2:(ncol(locs))];
         }
-
-
-        
+ 
         ## remove the nondecoded beads if desired
         if( (!outputNonDecoded) & (length(which(txt[,1] == 0))) ) 
             txt <- txt[-which(txt[,1] == 0),]
@@ -121,7 +120,7 @@ decompressBeadData <- function(input, inputPath = ".", outputMask = NULL, output
         
         writeLocsFile(file = paste(outputPath, paste(outputMask, "_Grn.locs", sep = ""), sep = .Platform$file.sep), t(locs[,1:2]), nBeads = header$nBeads);
         if(header$twoChannel) {
-        writeLocsFile(file = paste(outputPath, paste(outputMask, "_Red.locs", sep =""), sep = .Platform$file.sep), t(locs[,3:4]), nBeads = header$nBeads);
+            writeLocsFile(file = paste(outputPath, paste(outputMask, "_Red.locs", sep =""), sep = .Platform$file.sep), t(locs[,3:4]), nBeads = header$nBeads);
         }
         
         if(progressBar) {

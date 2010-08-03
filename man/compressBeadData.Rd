@@ -67,7 +67,7 @@ compressBeadData(txtFile, locsGrn, locsRed = NULL, outputFile = NULL,
 \examples{
  
     dataPath <- system.file("data", package = "BeadDataPackR")   
-    compressBeadData(txtFile = "example.txt", locsGrn = "example_Grn.locs", outputFile = "example.bab", path = dataPath, nBytes = 4, nrow = 326, ncol = 4)
+    compressBeadData(txtFile = "example.txt", locsGrn = "example_Grn.locs", outputFile = "example.bab", path = dataPath, nBytes = 4, nrow = 326, ncol = 4, fullLocsIndex = TRUE)
 }
 
 \keyword{ IO }

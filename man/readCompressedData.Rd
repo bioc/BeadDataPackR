@@ -24,7 +24,7 @@ readCompressedData(inputFile, path = ".", probeIDs = NULL)
 }
 
 \value{
-    If the requested probe IDs are present the function returns a data.frame with one row per bead.  If the probes are not found in the file then the function returns NULL.
+    If the requested probe IDs are present the function returns a data.frame with one row per bead.  If the probes are not found in the file then the function returns NULL and informs the user.
 }
 
 

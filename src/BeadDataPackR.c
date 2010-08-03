@@ -147,14 +147,17 @@ SEXP adjustValues(SEXP mat) {
 
     for(i = 0; i < nrow; i++) {
         
-        d = m[nrow + i] - m[(2*nrow) + i];
+        d = (m[i] % 15) - m[nrow + i];
             
         if(d > 7)
             d -= 15;
         else if (d < -7)
             d += 15;
-            
-        INTEGER(res)[i] = m[i] + d;
+                
+        /* old and maybe wrong */
+        //INTEGER(res)[i] = m[i] + d;
+        /* new */
+        INTEGER(res)[i] = m[i] - d;
     }
     
     UNPROTECT(1);

@@ -53,6 +53,16 @@ createIndices <- function(locs, nrow = NULL, ncol = NULL, pb = NULL)
         ## fit the lm to the adjusted coords and store the coefficients
         lmX <- lm(grid[,1] ~ 1 + seg[,1] + seg[,2])
         lmY <- lm(grid[,2] ~ 1 + seg[,1] + seg[,2])
+        
+        ## check whether mod 15 encoding is going to be enough
+        predX <- round(lmX$coefficients[1] + seg[,1] * lmX$coefficients[2] + seg[,2] * lmX$coefficients[3])
+        predY <- round(lmY$coefficients[1] + seg[,1] * lmY$coefficients[2] + seg[,2] * lmY$coefficients[3])
+        if( (any(abs(predX - grid[,1]) > 7)) | (any(abs(predY - grid[,2]) > 7)) ) {
+            if(!is.null(pb))
+                close(pb);
+            stop("There appear to be some badly positioned bead centres\nIt is recommended to use the fullLocsIndex argument for this array", call. = FALSE);
+        }
+        
         res[[4*i]] <- c(lmX$coefficients, lmY$coefficients)
     }
 
@@ -102,11 +112,11 @@ decodeIndices <- function(indices, locs, nSegs, marks, coefficients, pb = NULL) 
         ## obtain the predicted coordinates 
         predX <- round(coeff[1] + seg[,1] * coeff[2] + seg[,2] * coeff[3])
         predY <- round(coeff[4] + seg[,1] * coeff[5] + seg[,2] * coeff[6])
-        modX <- predX %% 15
-        modY <- predY %% 15
+        #modX <- predX %% 15
+        #modY <- predY %% 15
 
-        predX2 <- .Call("adjustValues", matrix(as.integer(cbind(predX, modX, seg[,3])), ncol = 3), PACKAGE = "BeadDataPackR");
-        predY2 <- .Call("adjustValues", matrix(as.integer(cbind(predY, modY, seg[,4])), ncol = 3), PACKAGE = "BeadDataPackR");
+        predX2 <- .Call("adjustValues", matrix(as.integer(cbind(predX, seg[,3])), ncol = 2), PACKAGE = "BeadDataPackR");
+        predY2 <- .Call("adjustValues", matrix(as.integer(cbind(predY, seg[,4])), ncol = 2), PACKAGE = "BeadDataPackR");
         trueIdx <- .Call("returnTrueIndex", as.integer(predX2), as.integer(predY2), as.integer(max(predY2)+1), PACKAGE = "BeadDataPackR");
         
         res <- c(res, idx[order(trueIdx)] );
