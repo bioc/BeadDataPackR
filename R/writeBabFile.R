@@ -139,7 +139,7 @@ writeBabBody <- function(combined, con, twoChannel, nBytes, useOffset, base2, fu
         
         ## record the index of the locs file
         if(fullLocsIndex) {
-          writeBin(as.integer(current[, ncol(current) ]), con = con, size = 1)
+          writeBin(as.integer(current[, ncol(current)-1 ]), con = con, size = 1)
           writeBin(as.integer(current[, ncol(current) ]), con = con, size = 2)
         }
         else {
