@@ -8,9 +8,6 @@ NEW FEATURES
 
     o 	Reduced decompression time by about 50% by using .Call() rather than apply()
 
-    o 	Added ensureSamePixel argument to compressBeadData(), to make sure the same pixels are 
-	used in subseqent foreground calculation.
-
 BUG FIXES
 
 	o 	Check indices are now employed correctly.

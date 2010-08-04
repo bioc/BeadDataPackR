@@ -10,7 +10,7 @@
 \usage{
 compressBeadData(txtFile, locsGrn, locsRed = NULL, outputFile = NULL,
                  path = NULL, nBytes = 8, base2 = TRUE, fullLocsIndex = FALSE,
-                 ensureSamePixel = FALSE, nrow = NULL, ncol = NULL, progressBar = TRUE)
+                 nrow = NULL, ncol = NULL, progressBar = TRUE)
 }
 
 \arguments{
@@ -37,9 +37,6 @@ compressBeadData(txtFile, locsGrn, locsRed = NULL, outputFile = NULL,
 }
 \item{fullLocsIndex}{
     Default value of 0 uses a linear model fitted to each segment of the array to allow reconstruct the locs file when the file is decompressed.  Using a value of 1 a simple index is used to record the locs file order, but requires more space.
-}
-\item{ensureSamePixel}{
-    When the precision of the bead coordinates is reduced, they are rounded in an appropriate direction.  This can result in small fracional parts being rounded to 0.  If this occurs Illumina's foreground algorithm will use a different set of pixels for it's calculation.  Setting this argument to TRUE ensures this doesn't occur by identifying such cases and ensuring they are always rounded away from 0.
 }
 \item{ncol}{
     This specifies the number of columns in each grid segment on the array and, if left blank, can normally be infered from the grid coordinates.  However, this can fail for particularly small grids. If one wants or needs to specify them explicitly, these values can be found in the .sdf which accompanies the bead level output from the scanner.  The number of columns per segment can be found within the tag <SizeGridX>

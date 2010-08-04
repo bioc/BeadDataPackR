@@ -27,7 +27,7 @@ writeArrayName <- function(txtFile, con)
 
 }
 
-writeCoordinates <- function(coordinates, con, twoChannel, nBytes, useOffset = FALSE, base2 = FALSE, ensureSamePixel = TRUE) {
+writeCoordinates <- function(coordinates, con, twoChannel, nBytes, useOffset = FALSE, base2 = FALSE) {
  
     ## formating to deal with cases where there is only one bead
     if(twoChannel) 
@@ -55,11 +55,6 @@ writeCoordinates <- function(coordinates, con, twoChannel, nBytes, useOffset = F
             mult <- 10^(max(which(2^nBits > 10^(1:5))));           
         
         tmpInts <- round(mult * frac);
-        ## if we want to ensure the same pixel is used we fix it here
-        if(any(tmpInts == 0) && ensureSamePixel) {
-            idx <- which( (tmpInts == 0) & (frac != 0) );
-            tmpInts[idx] <- 1;
-        }
         ## deal with any cases that have been rounded to the maximal value
         ## we want to increment the integer part in this case
         if(any(tmpInts == mult)) {
@@ -84,8 +79,7 @@ writeCoordinates <- function(coordinates, con, twoChannel, nBytes, useOffset = F
         writeBin(as.integer(ints), con = con, size = 1);
     }
     else { ## if we aren't storing a fractional part, we should round/ceiling the values
-        coords <- switch(ensureSamePixel + 1, round(coords), ceiling(coords));
-        
+        coords <- round(coords);       
         writeBin(as.integer(coords[,1:2]), con = con, size = 2);
         
         if(twoChannel) {
@@ -115,7 +109,7 @@ writeIntensities <- function(intensities, con) {
     writeBin(as.integer(flags), con = con, size = 1);
 }
 
-writeBabBody <- function(combined, con, twoChannel, nBytes, useOffset, base2, ensureSamePixel, fullLocsIndex, pb) {
+writeBabBody <- function(combined, con, twoChannel, nBytes, useOffset, base2, fullLocsIndex, pb) {
            
     ## use the index to create a list, each elemet having probes of one type
     divided <- split(combined, combined[,1])
@@ -137,10 +131,10 @@ writeBabBody <- function(combined, con, twoChannel, nBytes, useOffset, base2, en
         
         ## now record the coordinates      
         if(twoChannel) {
-            writeCoordinates(current[,c(3,4,6,7)], con = con, twoChannel = twoChannel, nBytes = nBytes, useOffset = useOffset, base2 = base2, ensureSamePixel = ensureSamePixel);
+            writeCoordinates(current[,c(3,4,6,7)], con = con, twoChannel = twoChannel, nBytes = nBytes, useOffset = useOffset, base2 = base2);
         }
         else {
-            writeCoordinates(current[,3:4], con = con, twoChannel = twoChannel, nBytes = nBytes, useOffset = useOffset, base2 = base2, ensureSamePixel = ensureSamePixel);
+            writeCoordinates(current[,3:4], con = con, twoChannel = twoChannel, nBytes = nBytes, useOffset = useOffset, base2 = base2);
         }
         
         ## record the index of the locs file

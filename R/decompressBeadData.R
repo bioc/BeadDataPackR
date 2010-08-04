@@ -14,8 +14,11 @@ decompressBeadData <- function(input, inputPath = ".", outputMask = NULL, output
         ## open connection to the binary file and inform the user
         con <- file(paste(inputPath, inputFile, sep = .Platform$file.sep), "rb");
         
-        ## read the number of unique probes and the total number of probes in the file
+        ## read the header
         header <- readHeader(con);
+        ## parse the header to see if the user needs to be informed about outdated versions
+        parseHeader(header);
+        
         if(is.null(outputMask))
             outputMask <- header$arrayName
         

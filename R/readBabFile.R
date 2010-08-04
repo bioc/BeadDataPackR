@@ -19,6 +19,20 @@ readHeader <- function(con) {
   return(header);
 }
 
+parseHeader <- function(header) {
+    ## some bug fixes have been followed by increments in version numbers.
+    ## this function will inform the user if data with known faults is encountered
+    
+    ## version 1 + fullLocsIndexing scrambled the order of the .locs file
+    if( (header$version == 1) & (header$indexingMethod) ) {
+        message("
+Early versions of BeadDataPackR incorrectly encoded the order of the input .locs file when the 'fullLocsIndex' argument was used, resulting in an incorrect .locs file on restoration. 
+The .txt file was unaffected by this bug.
+This has been corrected in BeadDataPackR v1.1.7 onwards")
+    }
+    
+}
+
 applyFlags <- function(inten) {
 
     ## apply the flags to each intensity

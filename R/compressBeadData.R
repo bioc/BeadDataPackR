@@ -1,4 +1,4 @@
-compressBeadData <- function(txtFile, locsGrn, locsRed = NULL, outputFile = NULL, path = NULL, nBytes = 8, base2 = TRUE, fullLocsIndex = FALSE, ensureSamePixel = FALSE, nrow = NULL, ncol = NULL, progressBar = TRUE) {
+compressBeadData <- function(txtFile, locsGrn, locsRed = NULL, outputFile = NULL, path = NULL, nBytes = 8, base2 = TRUE, fullLocsIndex = FALSE, nrow = NULL, ncol = NULL, progressBar = TRUE) {
 
     message(paste("\nCompressing", strsplit(txtFile, ".txt")));
     
@@ -94,7 +94,7 @@ compressBeadData <- function(txtFile, locsGrn, locsRed = NULL, outputFile = NULL
     con <- file(outputFile, "wb")
 
     ## write the file header
-    writeBabHeader(con = con, version = 1, combined = combined, nBytes = nBytes, twoChannel = twoChannel, useOffset = useOffset, base2 = base2, indexingMethod = fullLocsIndex, res = res);
+    writeBabHeader(con = con, version = 2, combined = combined, nBytes = nBytes, twoChannel = twoChannel, useOffset = useOffset, base2 = base2, indexingMethod = fullLocsIndex, res = res);
 
     ## write the name of the array
     writeArrayName(txtFile, con = con);
@@ -102,7 +102,7 @@ compressBeadData <- function(txtFile, locsGrn, locsRed = NULL, outputFile = NULL
     if(progressBar) setTxtProgressBar(pb, 0.7)
     
     ## write the body of the file
-    writeBabBody(combined, con = con, twoChannel = twoChannel, nBytes = nBytes, useOffset = useOffset, base2 = base2, ensureSamePixel = ensureSamePixel, fullLocsIndex = fullLocsIndex, pb = pb);     
+    writeBabBody(combined, con = con, twoChannel = twoChannel, nBytes = nBytes, useOffset = useOffset, base2 = base2, fullLocsIndex = fullLocsIndex, pb = pb);     
     close(con);
     
     if(progressBar) {
