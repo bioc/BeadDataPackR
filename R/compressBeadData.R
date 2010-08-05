@@ -91,7 +91,7 @@ function(txtFile, locsGrn, locsRed = NULL, outputFile = NULL, path = NULL, nByte
     con <- file(outputFile, "wb")
 
     ## write the file header
-    writeBabHeader(con = con, version = 1, combined = combined, nBytes = nBytes, twoChannel = twoChannel, useOffset = useOffset, base2 = base2, indexingMethod = fullLocsIndex, res = res);
+    writeBabHeader(con = con, version = 2, combined = combined, nBytes = nBytes, twoChannel = twoChannel, useOffset = useOffset, base2 = base2, indexingMethod = fullLocsIndex, res = res);
 
     ## write the name of the array
     writeArrayName(txtFile, con = con);
