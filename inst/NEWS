@@ -2,6 +2,8 @@ CHANGES IN VERSION 1.1
 
 NEW FEATURES
 
+    o   Added function extractLocsFile()
+
     o 	Added function readCompressedData()
 
     o 	decompressBeadData() will now take a vector of input files, rather than requiring a loop.
@@ -10,12 +12,14 @@ NEW FEATURES
 
 BUG FIXES
 
-	o 	Check indices are now employed correctly.
+    o   Fixed rounding errors when dealing with very small and negative coordinates.
 
-	o 	If any beads can't be positioned using the reduced index compression halts and the user
+    o 	Check indices are now employed correctly.
+
+    o 	If any beads can't be positioned using the reduced index compression halts and the user
 	is informed.
 
-	o 	Fixed a major bug that resulted in the .locs file being randomly ordered on reconstruction 
+    o 	Fixed a major bug that resulted in the .locs file being randomly ordered on reconstruction 
 	if the full index was used.
 
     o 	Now stops and informs the user if there are negative coordinates in the .locs file.

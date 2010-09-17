@@ -14,16 +14,20 @@ SEXP roundLocsFileValues(SEXP inputVector) {
     for(i = 0; i < length(inputVector); i++) {
         x = inVec[i];
         /* the precison of the rounding is determined by the integer part of the value */
-        if(x >= 10000)
+        if(fabs(x) >= 10000)
             digits = 2;
-        else if (x >= 1000)
+        else if (fabs(x) >= 1000)
             digits = 3;
-        else if (x >= 100)
+        else if (fabs(x) >= 100)
             digits = 4;
-        else if (x >= 10)
+        else if (fabs(x) >= 10)
             digits = 5;
-        else
+        else if (fabs(x) >= 1)
             digits = 6;
+        else if (fabs(x) >= 0.1)
+            digits = 7;
+        else 
+            digits = 8;
         /* perform the rounding to the required precision */
         REAL(outputVector)[i] = round(inVec[i]*(pow(10,digits)))/pow(10,digits);
     }

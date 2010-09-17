@@ -1,5 +1,4 @@
-combineFiles <-
-function(txt, locsGrn, locsRed = NULL, pb = NULL) {
+combineFiles <- function(txt, locsGrn, locsRed = NULL, pb = NULL) {
  
     locsRounded <- matrix(.Call("roundLocsFileValues", locsGrn, PACKAGE = "BeadDataPackR"), ncol = 2);
     txtFileCoords <- txt[,3:4];
@@ -11,7 +10,6 @@ function(txt, locsGrn, locsRed = NULL, pb = NULL) {
     
     locsKeyMult <- locsRounded[,1] * locsRounded[,2];
     txtKeyMult <- txtFileCoords[,2] * txtFileCoords[,3];
-
     
     if(!is.null(pb))
         setTxtProgressBar(pb, 0.20);

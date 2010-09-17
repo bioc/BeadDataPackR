@@ -1,5 +1,4 @@
-numberOfChannels <-
-function(file, sep = "\t") {
+numberOfChannels <- function(file, sep = "\t") {
     lines <- read.table(file, sep = sep, nrows = 2);
     if(ncol(lines) == 4) ##one channel
         return(1)
@@ -31,8 +30,7 @@ readLocsFile <- function(fileName, verbose = FALSE) {
     return(coords)
 }
 
-readBeadLevelTextFile <-
-function(file, sep = "\t", verbose = FALSE) {
+readBeadLevelTextFile <- function(file, sep = "\t", verbose = FALSE) {
     
     channels <- numberOfChannels(file, sep = sep);
     if(verbose)

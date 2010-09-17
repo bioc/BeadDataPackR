@@ -100,3 +100,69 @@ readCompressedData <- function(inputFile, path = ".", probeIDs = NULL)
     }
     return(output);
 }
+
+extractLocsFile <- function(inputFile, path = ".") {
+##
+## Function will extract only the .locs file from a .bab and return it as a matrix
+##
+    
+    ## open connection to the binary file
+    con <- file(paste(path, inputFile, sep = .Platform$file.sep), "rb");
+
+    ## read the file header
+    header <- readHeader(con);
+
+    ## create output matrix and position counter
+    locs <- matrix(NA, ncol = 2 + (3^header$twoChannel), nrow = header$nBeads);
+    pos <- 1
+    
+    for(i in 1:header$nProbeIDs) {
+
+        ## skip everything other than the locs information
+        storeTmp <- readBin(con, integer(), size = 4, n = 2);
+        probeID <- storeTmp[1];
+        nbeads <- storeTmp[2];
+        posEnd <- pos + nbeads - 1;
+        
+        ## How many bytes can we now skip?
+        inten <- as.logical(probeID) * 2^header$twoChannel * ( (2 * nbeads) + ( ( (nbeads - 1)  %/% 4) + 1) );
+        seek(con = con, where = inten, origin = "current");
+        
+        coords <- readCoordinates(con = con, nbeads = nbeads, nBytes = header$nBytes, twoChannel = header$twoChannel, offset = header$useOffset, base2 = header$base2)
+        
+        locs[pos:posEnd,2:3] <- coords[1:(2*nbeads)];
+        if(header$twoChannel)
+            locs[pos:posEnd,4:5] <- coords[(2*nbeads+1):length(coords)];
+        
+        ## read the locs file index
+        if(header$indexingMethod) {
+            locs[pos:posEnd, 1] <- readBin(con, integer(), size = 1, n = nbeads, signed = FALSE) * 65536;
+            locs[pos:posEnd, 1] <- locs[pos:posEnd, 1] + readBin(con, integer(), size = 2, n = nbeads, signed = FALSE)
+        }
+        else {
+            locs[pos:posEnd, 1] <- readBin(con, integer(), size = 1, n = nbeads, signed = FALSE)
+        }
+
+        ## increase the position counter
+        pos <- pos + nbeads;        
+
+    }
+    ## close the bab file
+    close(con);
+    
+    ## if the red channel are just offsets from the green then correct this
+    if(header$useOffset)
+        locs[,4:5] <- floor(locs[,2:3]) + locs[,4:5];
+    
+    ## reorder into locs file order
+    if(!header$indexingMethod) {
+        decoded <- decodeIndices(locs[,1], locs[,2:3], header$nSegs, header$marks, header$coeffs, pb = NULL);
+        locs[,2:3] <- reformCoordinates(locs[,2:3], header$nSegs, header$marks);
+        locs <- locs[decoded,2:(ncol(locs))]
+    }
+    else {
+        locs <- locs[order(locs[,1]), 2:(ncol(locs))];
+    }
+
+    return(locs);   
+}
