@@ -86,7 +86,15 @@ Rather than decompressing the \textit{.bab} file into the two original files, it
   readCompressedData(inputFile = "example.bab", path = dataPath, probeIDs = c(10008, 10010) )
 @
 
-This function takes a \textit{.bab} file found in the directory specified by the \Rfunarg{path} argument.  In this case it extracts the data relating to the beads with IDs 10008 and 10010, which is returned as a matrix in the same format as the \textit{.txt} file that would be created if the file were to be decompressed.  If the \Rfunarg{probeIDs} argument is left NULL then a matrix containing data for every probe on the array is returned.
+This function takes a \textit{.bab} file found in the directory specified by the \Rfunarg{path} argument.  In this case it extracts the data relating to the beads with IDs 10008 and 10010, which is returned as a matrix in the same format as the \textit{.txt} file that would be created if the file were to be decompressed.  If the \Rfunarg{probeIDs} argument is left NULL then a matrix containing data for every probe on the array is returned.\\
+
+Similarly, we can extract the information contained in the original \textit{.locs} file, i.e. the bead centre coordinates in \textit{.locs} file order, by using the following command:
+
+<<extractLocsFile, eval = FALSE>>=
+  locs <- extractLocsFile(inputFile = "example.bab", path = dataPath)
+@
+
+Using coordinates in the grid order provided by the \textit{.locs} can be useful for quickly determining neighbouring beads and is used in several instances by the \Rpackage{beadarray} package.
 
 \newpage
 \section*{Session Info}
