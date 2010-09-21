@@ -12,6 +12,9 @@ NEW FEATURES
 
 BUG FIXES
 
+    o   Fixed error when extracting red channel information using readCompressedData(). 
+    Thanks to Prof. Tim Triche for identifying and patching this.
+
     o   Fixed rounding errors when dealing with very small and negative coordinates.
 
     o 	Check indices are now employed correctly.

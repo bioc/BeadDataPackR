@@ -62,12 +62,12 @@ readCompressedData <- function(inputFile, path = ".", probeIDs = NULL)
             if(probeID) {  
                 output[pos:posEnd,2] <- readIntensities(con, nbead = nbeads);
                 if(header$twoChannel)
-                    outputTmp[pos:posEnd,5] <- readIntensities(con, nbead = nbeads);
+                    output[pos:posEnd,5] <- readIntensities(con, nbead = nbeads);
             } ## intensities not stored for probeID 0
             else {
                 output[pos:posEnd,2] <- rep(0, nbeads);
                 if(header$twoChannel) 
-                    outputTmp[pos:posEnd,5] <- rep(0, nbeads);
+                    output[pos:posEnd,5] <- rep(0, nbeads);
             }
                 
             coords <- readCoordinates(con = con, nbeads = nbeads, nBytes = header$nBytes, twoChannel = header$twoChannel, offset = header$useOffset, base2 = header$base2)
@@ -97,6 +97,14 @@ readCompressedData <- function(inputFile, path = ".", probeIDs = NULL)
 	## tell the user if no probe IDs matched
         message("No matching probe IDs");
         output <- NULL;
+    }
+    else {
+        if(header$twoChannel) {
+            colnames(output) <- c('ProbeID','Grn','GrnX','GrnY','Red','RedX','RedY')
+        } 
+        else {
+            colnames(output) <- c('ProbeID','Grn','GrnX','GrnY')
+        }
     }
     return(output);
 }
