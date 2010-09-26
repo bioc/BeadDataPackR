@@ -13,7 +13,8 @@ SEXP roundLocsFileValues(SEXP inputVector) {
     
     for(i = 0; i < length(inputVector); i++) {
         x = inVec[i];
-        /* the precison of the rounding is determined by the integer part of the value */
+        /* the precison of the rounding is determined by the integer part of the value 
+        Pretty clucky code, maybe this should become something more generic to round to 7 sig. fig. */
         if(fabs(x) >= 10000)
             digits = 2;
         else if (fabs(x) >= 1000)
@@ -26,8 +27,16 @@ SEXP roundLocsFileValues(SEXP inputVector) {
             digits = 6;
         else if (fabs(x) >= 0.1)
             digits = 7;
-        else 
+        else if (fabs(x) >= 0.01)
             digits = 8;
+        else if (fabs(x) >= 0.001)
+            digits = 9;
+        else if (fabs(x) >= 0.0001)
+            digits = 10;
+        else if (fabs(x) >= 0.00001)
+            digits = 11;
+        else 
+            digits = 12;
         /* perform the rounding to the required precision */
         REAL(outputVector)[i] = round(inVec[i]*(pow(10,digits)))/pow(10,digits);
     }
@@ -121,7 +130,6 @@ SEXP int2Bits(SEXP flags) {
     UNPROTECT(1);
     return(res);
 }
-
 
 
 SEXP decodeInd(SEXP indices) {
