@@ -42,7 +42,7 @@
 
 Raw Illumina BeadArray data consists of \textit{.tif} images produced by the scanner, accompanied by \textit{.txt} and \textit{.locs} files containing details of bead locations and their intensities within the image.  For a single channel human expression array these data typically occupy $\approx$ 125MB of storage.  The size of these files can prove a hinderance to both their storage and distribution.  Whilst the images can be compressed using a variety of common tools, the \Rpackage{BeadDataPackR} package aims to provide tools for the efficient compression of the \textit{.txt} and \textit{.locs} files.\\
 
-\noindent Disclaimer:  \Rpackage{BeadDataPackR} has been tested on data from a variety of Illumina BeadArray platforms and, too the best of our knowledge, data compressed using lossless settings has always been restored successfully.  However, we cannot take responsibility for any loss or damage to data that results from its use.
+\noindent Disclaimer:  \Rpackage{BeadDataPackR} has been tested on data from a variety of Illumina BeadArray platforms and, to the best of our knowledge, data compressed using lossless settings has always been restored successfully.  However, we cannot take responsibility for any loss or damage to data that results from its use.
 
 \section*{Compressing Data}
 The first step before using any of the functionality is to load the package.  For the purpose of this vignette was also get the path to the example data that is distributed with the package.
