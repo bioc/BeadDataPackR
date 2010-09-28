@@ -7,6 +7,7 @@ SEXP roundLocsFileValues(SEXP inputVector) {
     int i, digits;
     double x, *inVec;
     SEXP outputVector;
+    int nsize, nfactor, negBool;
     
     inVec = REAL(inputVector);
     PROTECT(outputVector = allocVector(REALSXP, length(inputVector)));
@@ -43,6 +44,7 @@ SEXP roundLocsFileValues(SEXP inputVector) {
     UNPROTECT(1);
     return(outputVector);
 }
+
 
 /* applies the intensity flags */
 SEXP applyFlags(SEXP flagsMat) {
