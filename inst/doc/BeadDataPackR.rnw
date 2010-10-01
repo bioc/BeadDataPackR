@@ -46,9 +46,9 @@ Raw Illumina BeadArray data consists of \textit{.tif} images produced by the sca
 
 \subsection*{Citing the package}
 
-If you make use of \Rpackage{BeadDataPackR} to ease distribution your data please cite the following paper:\\
+If you make use of \Rpackage{BeadDataPackR} to ease distribution of your data please cite the following paper:\\
 
-\noindent BeadDataPackR: A tool to facilitate the sharing of raw data from Illumina BeadArray studies. \textit{Cancer Informatics}. 2010, 9:217-227
+\noindent BeadDataPackR: A Tool to Facilitate the Sharing of Raw Data from Illumina BeadArray Studies. \textit{Cancer Informatics}, 9:217-227, 2010.
 
 \section*{Compressing Data}
 The first step before using any of the functionality is to load the package.  For the purpose of this vignette was also get the path to the example data that is distributed with the package.

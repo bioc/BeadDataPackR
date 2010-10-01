@@ -1,8 +1,8 @@
 citHeader("BeadDataPackR can be cited as:")
 
 citEntry(entry="article",
-    title = "BeadDataPackR: A tool to facilitate the sharing of raw data from Illumina BeadArray studies",
-    author = "Mike L, Smith and Andy G. Lynch",
+    title = "{BeadDataPackR: A Tool to Facilitate the Sharing of Raw Data from Illumina BeadArray Studies}",
+    author = "Mike L. Smith and Andy G. Lynch",
     journal = "Cancer Informatics",
     year = "2010",
     volume =  "9",
