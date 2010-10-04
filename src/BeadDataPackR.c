@@ -7,7 +7,6 @@ SEXP roundLocsFileValues(SEXP inputVector) {
     int i, digits;
     double x, *inVec;
     SEXP outputVector;
-    int nsize, nfactor, negBool;
     
     inVec = REAL(inputVector);
     PROTECT(outputVector = allocVector(REALSXP, length(inputVector)));
