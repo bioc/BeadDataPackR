@@ -51,7 +51,7 @@ If you make use of \Rpackage{BeadDataPackR} to ease distribution of your data pl
 \noindent BeadDataPackR: A Tool to Facilitate the Sharing of Raw Data from Illumina BeadArray Studies. \textit{Cancer Informatics}, 9:217-227, 2010.
 
 \section*{Compressing Data}
-The first step before using any of the functionality is to load the package.  For the purpose of this vignette was also get the path to the example data that is distributed with the package.
+The first step before using any of the functionality is to load the package.  For the purpose of this vignette we also get the path to the example data that is distributed with the package.
 
 <<Loading, eval=TRUE, echo = TRUE>>=
     library(BeadDataPackR)
