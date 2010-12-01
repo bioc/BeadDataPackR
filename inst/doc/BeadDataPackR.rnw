@@ -50,6 +50,10 @@ If you make use of \Rpackage{BeadDataPackR} to ease distribution of your data pl
 
 \noindent BeadDataPackR: A Tool to Facilitate the Sharing of Raw Data from Illumina BeadArray Studies. \textit{Cancer Informatics}, 9:217-227, 2010.
 
+\subsection*{iScan Data}
+
+Bead-level data from Illumina's iScan system comes in a different format to that from the older BeadScan system.  The primary difference is that for each array section two images and accompanying \textit{.locs} files are produced, labelled Swath1 and Swath2, along with a single \textit{.txt}.  \Rpackage{BeadDataPackR} is currently unable to compress data in this format, although a solution is being worked on.
+
 \section*{Compressing Data}
 The first step before using any of the functionality is to load the package.  For the purpose of this vignette we also get the path to the example data that is distributed with the package.
 
