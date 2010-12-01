@@ -47,17 +47,22 @@ combineFiles <- function(txt, locsGrn, locsRed = NULL, pb = NULL) {
 
     txtFileCoords <- cbind(txtFileCoords, locsFileCoords[,c(1, 4:ncol(locsFileCoords) )]);
 
+    ## combine 
     if(is.null(locsRed)) {
-      txtFileCoords <- txtFileCoords[order(txtFileCoords[,1]), c(5,6,4)];
-      txtFileCoords <- cbind(txt[,1:2], txtFileCoords);
-      undecoded <- cbind(rep(0, nrow(nonDeCoords)), rep(0, nrow(nonDeCoords)), nonDeCoords[,c(2,3,1)])
+        txtFileCoords <- txtFileCoords[order(txtFileCoords[,1]), c(5,6,4)];
+        txtFileCoords <- cbind(txt[,1:2], txtFileCoords);
+        undecoded <- cbind(rep(0, nrow(nonDeCoords)), rep(0, nrow(nonDeCoords)), nonDeCoords[,c(2,3,1)])
+        result <- rbind(undecoded, as.matrix(txtFileCoords));
+        colnames(result) <- c("Code", "Grn", "GrnX", "GrnY", "LocsIdx") 
     }
     else {
-      txtFileCoords <- txtFileCoords[order(txtFileCoords[,1]), c(5:8, 4)];
-      txtFileCoords <- cbind(txt[,1:2], txtFileCoords[,1:2], txt[,5], txtFileCoords[,3:5])
-      undecoded <- cbind(rep(0, nrow(nonDeCoords)), rep(0, nrow(nonDeCoords)), nonDeCoords[,2:3], rep(0, nrow(nonDeCoords)), nonDeCoords[,c(4:5, 1)])
+        txtFileCoords <- txtFileCoords[order(txtFileCoords[,1]), c(5:8, 4)];
+        txtFileCoords <- cbind(txt[,1:2], txtFileCoords[,1:2], txt[,5], txtFileCoords[,3:5])
+        undecoded <- cbind(rep(0, nrow(nonDeCoords)), rep(0, nrow(nonDeCoords)), nonDeCoords[,2:3], rep(0, nrow(nonDeCoords)), nonDeCoords[,c(4:5, 1)])
+        result <- rbind(undecoded, as.matrix(txtFileCoords));
+        colnames(result) <- c("Code", "Grn", "GrnX", "GrnY", "Red", "RedX", "RedY", "LocsIdx")  
     }
-      
-    return(rbind(undecoded, as.matrix(txtFileCoords)));
+
+    return(result);
 }
 
