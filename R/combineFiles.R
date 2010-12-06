@@ -1,4 +1,4 @@
-combineFiles <- function(txt, locsGrn, locsRed = NULL, pb = NULL) {
+combineFiles <- function(txt, locsGrn, locsRed = NULL, pb = NULL, verbose = FALSE) {
  
     locsRounded <- matrix(.Call("roundLocsFileValues", locsGrn, PACKAGE = "BeadDataPackR"), ncol = 2);
     txtFileCoords <- txt[,3:4];
@@ -26,9 +26,21 @@ combineFiles <- function(txt, locsGrn, locsRed = NULL, pb = NULL) {
 
     ## if there's still some duplicated use string concatonation. It's really slow!!
     if(length(idx) != nrow(txtFileCoords)) {
+        if(verbose) message("Using string concatenation");
         locsKey <- paste(locsRounded[,1], locsRounded[,2]);
         txtKey <- paste(txtFileCoords[,2], txtFileCoords[,3]);
         idx <- which(locsKey %in% txtKey);
+
+        ## with iScan we can still get perfect duplicate coordinates
+        ## currently we remove them and make them non-decoded
+        if(length(idx) > length(txtKey)) {
+            duplicateList <- removeDuplicates(locsKey, txtKey);
+            ## remove any from the txt file coordinates which have multiple matches in the locs file
+            txtKey <- txtKey[ -duplicateList[[2]] ];
+            txtFileCoords <- txtFileCoords[ -duplicateList[[2]], ];
+            txt <- txt[ -duplicateList[[2]], ];
+            idx <- which(locsKey %in% txtKey);
+        }
     }
     
     if(!is.null(pb))
@@ -42,6 +54,7 @@ combineFiles <- function(txt, locsGrn, locsRed = NULL, pb = NULL) {
         setTxtProgressBar(pb, 0.40);
     
     ## order the two files by the rounded x and y coords
+    if(verbose) message("Reordering");
     txtFileCoords <- txtFileCoords[order(txtFileCoords[,2], txtFileCoords[,3]),]
     locsFileCoords <- locsFileCoords[order(locsFileCoords[,2], locsFileCoords[,3]),]
 
@@ -64,5 +77,11 @@ combineFiles <- function(txt, locsGrn, locsRed = NULL, pb = NULL) {
     }
 
     return(result);
+}
+
+removeDuplicates <- function(locsKey, txtKey) { 
+    locsDup <- c(which(duplicated(locsKey)), which(duplicated(locsKey, fromLast = TRUE)))
+    txtDup <- which(txtKey %in% locsKey[locsDup])
+    return(list(locsDup, txtDup));
 }
 
