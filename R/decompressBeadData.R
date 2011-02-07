@@ -1,6 +1,9 @@
 decompressBeadData <- function(input, inputPath = ".", outputMask = NULL, outputPath = ".", outputNonDecoded = FALSE, roundValues = TRUE, progressBar = TRUE)
 {
     
+    if(!is.null(outputMask) & length(outputMask) != length(input))
+        stop("The outputMask argument must either be NULL or\ncontain the same number of entries as the input argument");
+    
     for(inputFile in input) {
         message(paste("\nDecompressing", inputFile));
         if(progressBar) {
@@ -20,7 +23,9 @@ decompressBeadData <- function(input, inputPath = ".", outputMask = NULL, output
         parseHeader(header);
         
         if(is.null(outputMask))
-            outputMask <- header$arrayName
+            outputMaskUsed <- header$arrayName
+        else
+            outputMaskUsed <- outputMask[which(input == inputFile)]            
         
         ## create a matrix to hold the results
         if(!header$twoChannel) {
@@ -117,13 +122,13 @@ decompressBeadData <- function(input, inputPath = ".", outputMask = NULL, output
             txt <- txt[-which(txt[,1] == 0),]
         
         ## write the output files
-        write.table(txt, file = paste(outputPath, paste(outputMask, ".txt", sep = ""), sep = .Platform$file.sep), sep = "\t", quote = FALSE, row.names = FALSE)
+        write.table(txt, file = paste(outputPath, paste(outputMaskUsed, ".txt", sep = ""), sep = .Platform$file.sep), sep = "\t", quote = FALSE, row.names = FALSE)
         
         if(progressBar) { setTxtProgressBar(pb, 0.90) };
         
-        writeLocsFile(file = paste(outputPath, paste(outputMask, "_Grn.locs", sep = ""), sep = .Platform$file.sep), t(locs[,1:2]), nBeads = header$nBeads);
+        writeLocsFile(file = paste(outputPath, paste(outputMaskUsed, "_Grn.locs", sep = ""), sep = .Platform$file.sep), t(locs[,1:2]), nBeads = header$nBeads);
         if(header$twoChannel) {
-            writeLocsFile(file = paste(outputPath, paste(outputMask, "_Red.locs", sep =""), sep = .Platform$file.sep), t(locs[,3:4]), nBeads = header$nBeads);
+            writeLocsFile(file = paste(outputPath, paste(outputMaskUsed, "_Red.locs", sep =""), sep = .Platform$file.sep), t(locs[,3:4]), nBeads = header$nBeads);
         }
         
         if(progressBar) {

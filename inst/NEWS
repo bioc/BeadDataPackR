@@ -1,3 +1,11 @@
+CHANGES IN VERSION 1.2
+
+BUG FIXES
+
+    o   Fixed error when a vector of files was passed to decompressBeadData().
+    Formerly, if arrayMask was NULL each output file was created with the same
+    name, overwriting the previous one.
+
 CHANGES IN VERSION 1.1
 
 NEW FEATURES
@@ -6,7 +14,8 @@ NEW FEATURES
 
     o 	Added function readCompressedData()
 
-    o 	decompressBeadData() will now take a vector of input files, rather than requiring a loop.
+    o 	decompressBeadData() will now take a vector of input files, rather than
+    requiring a loop.
 
     o 	Reduced decompression time by about 50% by using .Call() rather than apply()
 
@@ -19,8 +28,8 @@ BUG FIXES
 
     o 	Check indices are now employed correctly.
 
-    o 	If any beads can't be positioned using the reduced index compression halts and the user
-	is informed.
+    o 	If any beads can't be positioned using the reduced index compression
+    halts and the user is informed.
 
     o 	Fixed a major bug that resulted in the .locs file being randomly ordered on reconstruction 
 	if the full index was used.
