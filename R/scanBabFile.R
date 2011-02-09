@@ -11,24 +11,29 @@ readCompressedData <- function(inputFile, path = ".", probeIDs = NULL)
     ## read the file header
     header <- readHeader(con);
 
-    outputCount <- 0;
-
     ## scan through once to find and count the beads we're interested in
-    for(i in 1:header$nProbeIDs) {
+    ## only need to do this if probeIDs != NULL
+    if(!is.null(probeIDs)) {
+        outputCount <- 0;
+        for(i in 1:header$nProbeIDs) {
 
-	storeTmp <- readBin(con, integer(), size = 4, n = 2);
-	probeID <- storeTmp[1];
-	nbeads <- storeTmp[2];
+            storeTmp <- readBin(con, integer(), size = 4, n = 2);
+            probeID <- storeTmp[1];
+            nbeads <- storeTmp[2];
         
-        ## are we looking for this probeID?
-        if( (is.null(probeIDs)) | (probeID %in% probeIDs) ) {
-            outputCount <- outputCount + nbeads;
+            ## are we looking for this probeID?
+            if( (is.null(probeIDs)) | (probeID %in% probeIDs) ) {
+                outputCount <- outputCount + nbeads;
+            }
+            ## How many bytes can we now skip?
+            inten <- as.logical(probeID) * 2^header$twoChannel * ( (2 * nbeads) + ( ( (nbeads - 1)  %/% 4) + 1) )
+            coords <- (2 * header$nBytes * nbeads) - (0^(!header$useOffset) * 2 * nbeads);
+            index <- 3^header$indexingMethod * nbeads;
+            seek(con = con, where = sum(inten, coords, index), origin = "current");
         }
-        ## How many bytes can we now skip?
-        inten <- as.logical(probeID) * 2^header$twoChannel * ( (2 * nbeads) + ( ( (nbeads - 1)  %/% 4) + 1) )
-        coords <- (2 * header$nBytes * nbeads) - (0^(!header$useOffset) * 2 * nbeads);
-        index <- 3^header$indexingMethod * nbeads;
-        seek(con = con, where = sum(inten, coords, index), origin = "current");
+    }
+    else {
+        outputCount <- header$nBeads;
     }
 
     ## reset to the beginning of the file

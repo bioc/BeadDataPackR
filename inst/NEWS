@@ -2,8 +2,11 @@ CHANGES IN VERSION 1.3
 
 BUG FIXES
 
-	o   Fixed error when a vector of files was passed to decompressBeadData().  Formerly, if arrayMask was NULL
-	each output file was created with the same name, overwriting the previous one.
+    o   Improved performance of readCompressedData() when extracting all probeIDs.
+
+    o   Fixed error when a vector of files was passed to decompressBeadData().
+    Formerly, if arrayMask was NULL each output file was created with the same
+    name, overwriting the previous one.
 
 CHANGES IN VERSION 1.1
 
