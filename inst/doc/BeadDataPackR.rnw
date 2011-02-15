@@ -1,11 +1,7 @@
-%
-% NOTE -- ONLY EDIT beadarray.rnw!!!
-% beadarray.tex file will get overwritten.
-%
-%\VignetteIndexEntry{beadarray Vignette}
+%\VignetteIndexEntry{BeadDataPackR Vignette}
 %\VignetteDepends{}
-%\VignetteKeywords{beadarray expression Analysis}
-%\VignettePackage{beadarray}
+%\VignetteKeywords{BeadDataPackR Illumina Microarray Compression}
+%\VignettePackage{BeadDataPackR}
 \documentclass{article}
 
 \usepackage{hyperref}
@@ -96,7 +92,7 @@ Rather than decompressing the \textit{.bab} file into the two original files, it
   readCompressedData(inputFile = "example.bab", path = dataPath, probeIDs = c(10008, 10010) )
 @
 
-This function takes a \textit{.bab} file found in the directory specified by the \Rfunarg{path} argument.  In this case it extracts the data relating to the beads with IDs 10008 and 10010, which is returned as a matrix in the same format as the \textit{.txt} file that would be created if the file were to be decompressed.  If the \Rfunarg{probeIDs} argument is left NULL then a matrix containing data for every probe on the array is returned.\\
+This function takes a \textit{.bab} file found in the directory specified by the \Rfunarg{path} argument.  In this case it extracts the data relating to the beads with IDs 10008 and 10010, which is returned as a matrix in the same format as the \textit{.txt} file that would be created if the file were to be decompressed.  If the \Rfunarg{probeIDs} argument is left NULL then a matrix containing data for every probe on the array is returned (including the non-decoded beads).  This mechanism is used within the \Rpackage{beadarray} package, from version \texttt{2.1.11}, to read compressed data directly from \textit{.bab} file into \Rpackage{beadarray} for analysis.\\
 
 Similarly, we can extract the information contained in the original \textit{.locs} file, i.e. the bead centre coordinates in \textit{.locs} file order, by using the following command:
 
