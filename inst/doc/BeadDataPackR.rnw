@@ -55,7 +55,7 @@ The first step before using any of the functionality is to load the package.  Fo
 
 <<Loading, eval=TRUE, echo = TRUE>>=
     library(BeadDataPackR)
-    dataPath <- system.file("data", package = "BeadDataPackR")
+    dataPath <- system.file("extdata", package = "BeadDataPackR")
 @
 
 \Rpackage{BeadDataPackR} has two primary functions, namely to compress raw Illumina data, or decompress a file already created with the package.  We'll begin with file compression, which is carried out using the following commands:

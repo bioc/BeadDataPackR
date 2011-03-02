@@ -45,7 +45,7 @@ decompressBeadData(input, inputPath = ".", outputMask = NULL, outputPath = ".",
 }
 
 \examples{ 
-    dataPath <- system.file("data", package = "BeadDataPackR")
+    dataPath <- system.file("extdata", package = "BeadDataPackR")
     decompressBeadData(input = "example.bab", inputPath = dataPath, outputPath = ".")
 }
 

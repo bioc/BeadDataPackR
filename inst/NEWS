@@ -8,6 +8,11 @@ BUG FIXES
     Formerly, if arrayMask was NULL each output file was created with the same
     name, overwriting the previous one.
 
+PACKAGE STRUCTURE CHANGES
+
+	o	Moved example data to inst/extdata in accordance with R pacakge guidelines.
+	Removes warning from R CMD check.
+
 CHANGES IN VERSION 1.1
 
 NEW FEATURES

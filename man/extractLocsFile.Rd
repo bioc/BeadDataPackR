@@ -31,7 +31,7 @@ extractLocsFile(inputFile, path = ".")
 
 \examples{
  
-    dataPath <- system.file("data", package = "BeadDataPackR")   
+    dataPath <- system.file("extdata", package = "BeadDataPackR")   
     locs <- extractLocsFile(inputFile = "example.bab", path = dataPath)
     locs[1:10,]
 }

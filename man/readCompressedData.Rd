@@ -34,7 +34,7 @@ readCompressedData(inputFile, path = ".", probeIDs = NULL)
 
 \examples{
  
-    dataPath <- system.file("data", package = "BeadDataPackR")   
+    dataPath <- system.file("extdata", package = "BeadDataPackR")   
     readCompressedData(inputFile = "example.bab", path = dataPath, probeIDs = c(10008, 10010))
 }
 
