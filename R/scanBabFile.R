@@ -83,6 +83,14 @@ readCompressedData <- function(inputFile, path = ".", probeIDs = NULL)
                 
             ## skip the locs file index, we don't need it here
             seek(con = con, where = nbeads * 3^header$indexingMethod, origin = "current");
+            ## we do want it after all!
+            #if(header$indexingMethod) {
+            #    output[pos:posEnd, ncol(output)] <- readBin(con, integer(), size = 1, n = nbeads, signed = FALSE) * 65536;
+            #    output[pos:posEnd, ncol(output)] <- output[pos:posEnd, ncol(output)] + readBin(con, integer(), size = 2, n = nbeads, signed = FALSE)
+            #}
+            #else {
+            #    output[pos:posEnd, ncol(output)] <- readBin(con, integer(), size = 1, n = nbeads, signed = FALSE)
+            #}        
 
             ## increase the position counter
             pos <- pos + nbeads;
@@ -97,6 +105,12 @@ readCompressedData <- function(inputFile, path = ".", probeIDs = NULL)
     }
     ## close the bab file
     close(con);
+    
+    ## round the coordinates to match the text file
+    output[,3:4] <- matrix(.Call("roundLocsFileValues", output[,3:4], PACKAGE = "BeadDataPackR"), ncol = 2);
+    if(header$twoChannel)
+        output[,6:7] <- matrix(.Call("roundLocsFileValues", output[,6:7], PACKAGE = "BeadDataPackR"), ncol = 2);
+    
 
     if(!nrow(output)) {
 	## tell the user if no probe IDs matched
