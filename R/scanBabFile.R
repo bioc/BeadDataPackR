@@ -119,10 +119,10 @@ readCompressedData <- function(inputFile, path = ".", probeIDs = NULL)
     }
     else {
         if(header$twoChannel) {
-            colnames(output) <- c('ProbeID','Grn','GrnX','GrnY','Red','RedX','RedY')
+            colnames(output) <- c('Code','Grn','GrnX','GrnY','Red','RedX','RedY')
         } 
         else {
-            colnames(output) <- c('ProbeID','Grn','GrnX','GrnY')
+            colnames(output) <- c('Code','Grn','GrnX','GrnY')
         }
     }
     return(output);

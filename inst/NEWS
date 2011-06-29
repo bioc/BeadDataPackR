@@ -1,6 +1,11 @@
 CHANGES IN VERSION 1.5
 
 BUG FIXES
+	
+	o	Beads with negative coordinates can now be included in the bab file
+
+	o	If overlapping segments are found a warning is printed and the full 
+	locs index is used.
 
 	o	Coordinate values returned by readCompressedData() are now rounded to
 	match the precision of the original text file.

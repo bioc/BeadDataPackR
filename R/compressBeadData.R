@@ -45,8 +45,8 @@ compressBeadData <- function(txtFile, locsGrn, locsRed = NULL, outputFile = NULL
       locsRed <- readLocsFile(locsRed);
 
     ## check there aren't any negative coordinates.  If there are stop and inform the user
-    if( any(locsGrn < 0) || any(locsRed < 0) )
-        stop("Negative coordinates found in .locs file\nBeadDataPackR cannot currently compress such arrays");
+    #if( any(locsGrn < 0) || any(locsRed < 0) )
+    #    stop("Negative coordinates found in .locs file\nBeadDataPackR cannot currently compress such arrays");
 
     if(progressBar) setTxtProgressBar(pb, 0.1)
     
@@ -61,15 +61,18 @@ compressBeadData <- function(txtFile, locsGrn, locsRed = NULL, outputFile = NULL
         ## replace coordinates with shifted ones
         shifts <- res[[3]][seq(1,length(res[[3]]), 3)]
         if(any(as.logical(shifts))) {
-            message("DEBUG: applying shifts");
-            ## find which segments need to be shifted
-            shiftIdx <- which(as.logical(shifts))
-            for(i in shiftIdx) {
-                ## find the beads in those segments
-                segIdx <- which( (combined[,ncol(combined)] > (i*res[[5]][4] + 1)) & (combined[,ncol(combined)] < ((i+1)*res[[5]][4])) );
-                ## shift them appropriately
-                combined[segIdx,4] <- combined[segIdx,4] + shifts[i];
-            }
+#             message("DEBUG: applying shifts");
+#             ## find which segments need to be shifted
+#             shiftIdx <- which(as.logical(shifts))
+#             for(i in shiftIdx) {
+#                 ## find the beads in those segments
+#                 segIdx <- which( (combined[,ncol(combined)] > (i*res[[5]][4] + 1)) & (combined[,ncol(combined)] < ((i+1)*res[[5]][4])) );
+#                 ## shift them appropriately
+#                 combined[segIdx,4] <- combined[segIdx,4] + shifts[i];
+#             }
+            ## if we need to use a shift, switch to the fullLocsIndex for now
+            fullLocsIndex = TRUE;
+            warning("Overlapping sections found when creating ", outputFile, "\n  Full locs index used instead");
         }
         indices <- (16 * res[[2]][,1]) + res[[2]][,2];
         if(progressBar) setTxtProgressBar(pb, 0.65)

@@ -38,7 +38,7 @@ createIndices <- function(locs, nrow = NULL, ncol = NULL, pb = NULL)
         ## adjust for overlapping segments
         ## store the adjust coords and grid indices
         if( floor(min(seg[,2])) < prevMaxY ) {
-            message("Overlapping segment found! Adjusting...");
+            #message("Overlapping segment found! Adjusting...");
             shift <- prevMaxY - floor(min(seg[,2])) + 1
             seg[,2] <- seg[,2] + shift
             res[[4*i-1]] <- c(shift, floor(min(seg[,2])), ceiling(max(seg[,2])));
