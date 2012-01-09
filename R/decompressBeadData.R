@@ -1,8 +1,8 @@
-decompressBeadData <- function(input, inputPath = ".", outputMask = NULL, outputPath = ".", outputNonDecoded = FALSE, roundValues = TRUE, progressBar = TRUE)
-{
+decompressBeadData <- function(input, inputPath = ".", outputMask = NULL, outputPath = ".", outputNonDecoded = FALSE, roundValues = TRUE, progressBar = TRUE) {
     
-    if(!is.null(outputMask) & length(outputMask) != length(input))
+    if(!is.null(outputMask) & length(outputMask) != length(input)) {
         stop("The outputMask argument must either be NULL or\ncontain the same number of entries as the input argument");
+    }
     
     for(inputFile in input) {
         message(paste("\nDecompressing", inputFile));

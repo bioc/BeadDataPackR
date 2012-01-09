@@ -50,7 +50,7 @@ compressBeadData(txtFile, locsGrn, locsRed = NULL, outputFile = NULL,
 }
 
 \value{
-    Primarily invoked for its side effect, which is to produce a compressed version of the input files. The function returns, invisibly, the total number of beads stored in the compressed file.
+    Primarily invoked for its side effect, which is to produce a compressed version of the input files. The function returns, invisibly, a logical \code{TRUE} if compression was successful.
 }
 
 \details{

@@ -64,6 +64,7 @@ The first step before using any of the functionality is to load the package.  Fo
     compressBeadData(txtFile = "example.txt", locsGrn = "example_Grn.locs", outputFile = "example.bab", path = dataPath, nBytes = 4, nrow = 326, ncol = 4)
 @
 
+
 The \Rfunarg{txtFile} and \Rfunarg{locsGrn} arguments specify the names of the files to be compressed.  For two channel data there is an additional argument, \Rfunarg{locsRed}, giving the name of the \textit{.locs} file for the red channel.  These files should be found within the directory specified in the \Rfunarg{path} argument.  A future revision of the package will hopefully alter this behaviour, so all arrays within a specified folder will be automatically identified and compressed.
 
 The argument \Rfunarg{nBytes} specifies how many bytes should be used to store the fractional parts of the bead coordinates. For a single channel array the maximum value is 4 (8 for a two channel array).  If the maximum value is used the coordinates are stored in the \textit{.bab} file as single precision floating point numbers, as they are in the \textit{.locs} files.  If a value smaller than the maximum is choosen then the integer parts of each coordinate are stored seperately.  The requested number of bytes are then used to store the fractional parts, with a corresponding loss of precision as the number of bytes decreases.

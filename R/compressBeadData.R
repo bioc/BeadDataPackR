@@ -112,5 +112,7 @@ compressBeadData <- function(txtFile, locsGrn, locsRed = NULL, outputFile = NULL
         setTxtProgressBar(pb, 1);
         close(pb);
     }
+    
+    return(invisible(TRUE))
 }
 
