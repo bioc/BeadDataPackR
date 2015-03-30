@@ -65,9 +65,9 @@ readCompressedData <- function(inputFile, path = ".", probeIDs = NULL)
             output[pos:posEnd,1] <- rep(probeID, nbeads);     
             ## only read the intensities if they are there
             if(probeID) {  
-                output[pos:posEnd,2] <- readIntensities(con, nbead = nbeads);
+                output[pos:posEnd,2] <- readIntensities(con, nbeads = nbeads);
                 if(header$twoChannel)
-                    output[pos:posEnd,5] <- readIntensities(con, nbead = nbeads);
+                    output[pos:posEnd,5] <- readIntensities(con, nbeads = nbeads);
             } ## intensities not stored for probeID 0
             else {
                 output[pos:posEnd,2] <- rep(0, nbeads);

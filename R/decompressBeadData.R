@@ -65,9 +65,9 @@ decompressBeadData <- function(input, inputPath = ".", outputMask = NULL, output
                     txt[pos:posEnd,5] <- rep(0, nbeads)
             }
             else {
-                txt[pos:posEnd,2] <- readIntensities(con, nbead = nbeads);
+                txt[pos:posEnd,2] <- readIntensities(con, nbeads = nbeads);
                 if(header$twoChannel)
-                    txt[pos:posEnd,5] <- readIntensities(con, nbead = nbeads);
+                    txt[pos:posEnd,5] <- readIntensities(con, nbeads = nbeads);
             }
                 
             coords <- readCoordinates(con = con, nbeads = nbeads, nBytes = header$nBytes, twoChannel = header$twoChannel, offset = header$useOffset, base2 = header$base2)    
@@ -126,9 +126,9 @@ decompressBeadData <- function(input, inputPath = ".", outputMask = NULL, output
         
         if(progressBar) { setTxtProgressBar(pb, 0.90) };
         
-        writeLocsFile(file = paste(outputPath, paste(outputMaskUsed, "_Grn.locs", sep = ""), sep = .Platform$file.sep), t(locs[,1:2]), nBeads = header$nBeads);
+        writeLocsFile(fileName = paste(outputPath, paste(outputMaskUsed, "_Grn.locs", sep = ""), sep = .Platform$file.sep), t(locs[,1:2]), nBeads = header$nBeads);
         if(header$twoChannel) {
-            writeLocsFile(file = paste(outputPath, paste(outputMaskUsed, "_Red.locs", sep =""), sep = .Platform$file.sep), t(locs[,3:4]), nBeads = header$nBeads);
+            writeLocsFile(fileName = paste(outputPath, paste(outputMaskUsed, "_Red.locs", sep =""), sep = .Platform$file.sep), t(locs[,3:4]), nBeads = header$nBeads);
         }
         
         if(progressBar) {

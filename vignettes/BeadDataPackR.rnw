@@ -2,10 +2,11 @@
 %\VignetteDepends{}
 %\VignetteKeywords{BeadDataPackR Illumina Microarray Compression}
 %\VignettePackage{BeadDataPackR}
+%\VignetteEngine{knitr::knitr}
 \documentclass{article}
 
-\usepackage{hyperref}
-\usepackage{Sweave}
+%\usepackage{hyperref}
+%\usepackage{Sweave}
 \textwidth=6.2in
 \textheight=8.5in
 %\parskip=.3cm
@@ -13,19 +14,18 @@
 \evensidemargin=.1in
 \headheight=-.3in
 
-\newcommand{\Rfunction}[1]{{\texttt{#1}}}
-\newcommand{\Robject}[1]{{\texttt{#1}}}
-\newcommand{\Rpackage}[1]{{\textsf{#1}}}
-\newcommand{\Rmethod}[1]{{\texttt{#1}}}
 \newcommand{\Rfunarg}[1]{{\texttt{#1}}}
-\newcommand{\Rclass}[1]{{\textit{#1}}}
-
-
 
 \newcommand{\classdef}[1]{
   {\em #1}
 }
+
+<<style-knitr, eval=TRUE, echo=FALSE, results="asis">>=
+BiocStyle::latex()
+@
+
 \begin{document}
+%\SweaveOpts{concordance=TRUE}
 \title{\Rpackage{BeadDataPackR}: Compression Tools for Raw Illumina Beadarray Data}
 
 \author{Mike L. Smith and Andy G. Lynch}
@@ -61,7 +61,9 @@ The first step before using any of the functionality is to load the package.  Fo
 \Rpackage{BeadDataPackR} has two primary functions, namely to compress raw Illumina data, or decompress a file already created with the package.  We'll begin with file compression, which is carried out using the following commands:
 
 <<Compress, eval=FALSE, echo = TRUE>>=
-    compressBeadData(txtFile = "example.txt", locsGrn = "example_Grn.locs", outputFile = "example.bab", path = dataPath, nBytes = 4, nrow = 326, ncol = 4)
+    compressBeadData(txtFile = "example.txt", locsGrn = "example_Grn.locs", 
+                     outputFile = "example.bab", path = dataPath, nBytes = 4, 
+                     nrow = 326, ncol = 4)
 @
 
 
@@ -76,7 +78,9 @@ The \Rfunarg{nrow} and \Rfunarg{ncol} arguments can normally be left blank.  The
 To decompress a \textit{.bab} file that was created by \Rpackage{BeadDataPackR}, use the following function:
 
 <<Decompress, eval=FALSE>>=
-    decompressBeadData(inputFile = "example.bab", inputPath = dataPath, outputMask = "restored", outputPath = ".", outputNonDecoded = FALSE, roundValues = TRUE )
+    decompressBeadData(inputFile = "example.bab", inputPath = dataPath, 
+                       outputMask = "restored", outputPath = ".", 
+                       outputNonDecoded = FALSE, roundValues = TRUE )
 @
 
 The \Rfunarg{inputFile} argument specifies the name of the \textit{.bab} that should be decompressed.  This file should be located in the folder indicated by \Rfunarg{inputPath}, which by default is the current working directory.
@@ -106,15 +110,10 @@ Using coordinates in the grid order provided by the \textit{.locs} can be useful
 \newpage
 \section*{Session Info}
 
-\begin{table*}[htbp]
-\begin{minipage}{\textwidth}
-<<sessionInfo, results=tex, print=TRUE>>=
+Here is the output of \Rfunction{sessionInfo} on the system on which
+this document was compiled:
+<<sessionInfo, results='asis', eval=TRUE>>=
 toLatex(sessionInfo())
-@ 
-\end{minipage}
-\caption{\label{tab:sessioninfo}%
-The output of \Rfunction{sessionInfo} on the build system 
-after running this vignette.}
-\end{table*}
+@
 
 \end{document}
