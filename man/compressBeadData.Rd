@@ -63,9 +63,12 @@ compressBeadData(txtFile, locsGrn, locsRed = NULL, outputFile = NULL,
 
 \examples{
  
-    dataPath <- system.file("extdata", package = "BeadDataPackR")   
+    dataPath <- system.file("extdata", package = "BeadDataPackR")  
+    ## copy the files to a temp directory, and don't overwrite system files
+    file.copy( list.files(path = dataPath, pattern = "example", full.names = TRUE), 
+               tempdir() )
     compressBeadData(txtFile = "example.txt", locsGrn = "example_Grn.locs", 
-    outputFile = "example.bab", path = dataPath, nBytes = 4, nrow = 326, 
+    outputFile = "example.bab", path = tempdir(), nBytes = 4, nrow = 326, 
     ncol = 4, fullLocsIndex = TRUE)
 }
 

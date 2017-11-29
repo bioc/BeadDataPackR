@@ -48,7 +48,7 @@ If you make use of \Rpackage{BeadDataPackR} to ease distribution of your data pl
 
 \subsection*{iScan Data}
 
-Bead-level data from Illumina's iScan system comes in a different format to that from the older BeadScan system.  The primary difference is that for each array section two images and accompanying \textit{.locs} files are produced, labelled Swath1 and Swath2, along with a single \textit{.txt}.  \Rpackage{BeadDataPackR} is currently unable to compress data in this format, although a solution is being worked on.
+Bead-level data from Illumina's iScan system comes in a different format to that from the older BeadScan system.  The primary difference is that for each array section two images and accompanying \textit{.locs} files are produced, labelled Swath1 and Swath2, along with a single \textit{.txt}.  \Rpackage{BeadDataPackR} is currently unable to compress data in this format.
 
 \section*{Compressing Data}
 The first step before using any of the functionality is to load the package.  For the purpose of this vignette we also get the path to the example data that is distributed with the package.
@@ -94,7 +94,8 @@ The \textit{.txt} file that are produced by Illumina's scanner do not included t
 Rather than decompressing the \textit{.bab} file into the two original files, it may be useful to extract data directly from it.  This can be achieved in the following way:
 
 <<readCompressed, eval = FALSE>>=
-  readCompressedData(inputFile = "example.bab", path = dataPath, probeIDs = c(10008, 10010) )
+  readCompressedData(inputFile = "example.bab", path = dataPath, 
+                     probeIDs = c(10008, 10010) )
 @
 
 This function takes a \textit{.bab} file found in the directory specified by the \Rfunarg{path} argument.  In this case it extracts the data relating to the beads with IDs 10008 and 10010, which is returned as a matrix in the same format as the \textit{.txt} file that would be created if the file were to be decompressed.  If the \Rfunarg{probeIDs} argument is left NULL then a matrix containing data for every probe on the array is returned (including the non-decoded beads).  This mechanism is used within the \Rpackage{beadarray} package, from version \texttt{2.1.11}, to read compressed data directly from \textit{.bab} file into \Rpackage{beadarray} for analysis.\\
@@ -112,8 +113,8 @@ Using coordinates in the grid order provided by the \textit{.locs} can be useful
 
 Here is the output of \Rfunction{sessionInfo} on the system on which
 this document was compiled:
-<<sessionInfo, results='asis', eval=TRUE>>=
-toLatex(sessionInfo())
+<<sessionInfo, eval=TRUE>>=
+sessionInfo()
 @
 
 \end{document}
