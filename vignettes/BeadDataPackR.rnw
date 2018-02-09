@@ -56,13 +56,14 @@ The first step before using any of the functionality is to load the package.  Fo
 <<Loading, eval=TRUE, echo = TRUE>>=
     library(BeadDataPackR)
     dataPath <- system.file("extdata", package = "BeadDataPackR")
+    tempPath <- tempdir()
 @
 
 \Rpackage{BeadDataPackR} has two primary functions, namely to compress raw Illumina data, or decompress a file already created with the package.  We'll begin with file compression, which is carried out using the following commands:
 
 <<Compress, eval=FALSE, echo = TRUE>>=
     compressBeadData(txtFile = "example.txt", locsGrn = "example_Grn.locs", 
-                     outputFile = "example.bab", path = dataPath, nBytes = 4, 
+                     outputFile = "example.bab", path = tempPath, nBytes = 4, 
                      nrow = 326, ncol = 4)
 @
 
@@ -78,8 +79,8 @@ The \Rfunarg{nrow} and \Rfunarg{ncol} arguments can normally be left blank.  The
 To decompress a \textit{.bab} file that was created by \Rpackage{BeadDataPackR}, use the following function:
 
 <<Decompress, eval=FALSE>>=
-    decompressBeadData(inputFile = "example.bab", inputPath = dataPath, 
-                       outputMask = "restored", outputPath = ".", 
+    decompressBeadData(inputFile = "example.bab", inputPath = tempPath, 
+                       outputMask = "restored", outputPath = tempPath, 
                        outputNonDecoded = FALSE, roundValues = TRUE )
 @
 
@@ -94,7 +95,7 @@ The \textit{.txt} file that are produced by Illumina's scanner do not included t
 Rather than decompressing the \textit{.bab} file into the two original files, it may be useful to extract data directly from it.  This can be achieved in the following way:
 
 <<readCompressed, eval = FALSE>>=
-  readCompressedData(inputFile = "example.bab", path = dataPath, 
+  readCompressedData(inputFile = "example.bab", path = tempPath, 
                      probeIDs = c(10008, 10010) )
 @
 
@@ -103,7 +104,7 @@ This function takes a \textit{.bab} file found in the directory specified by the
 Similarly, we can extract the information contained in the original \textit{.locs} file, i.e. the bead centre coordinates in \textit{.locs} file order, by using the following command:
 
 <<extractLocsFile, eval = FALSE>>=
-  locs <- extractLocsFile(inputFile = "example.bab", path = dataPath)
+  locs <- extractLocsFile(inputFile = "example.bab", path = tempPath)
 @
 
 Using coordinates in the grid order provided by the \textit{.locs} can be useful for quickly determining neighbouring beads and is used in several instances by the \Rpackage{beadarray} package.

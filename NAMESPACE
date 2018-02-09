@@ -1,3 +1,7 @@
 useDynLib(BeadDataPackR, .registration = TRUE)
 
 export(decompressBeadData, compressBeadData, readCompressedData, extractLocsFile)
+
+importFrom("stats", "lm")
+importFrom("utils", "read.table", "setTxtProgressBar",
+             "txtProgressBar", "write.table")
